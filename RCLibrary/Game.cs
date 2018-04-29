@@ -15,6 +15,10 @@ namespace RCLibrary
         List<Command> commands = new List<Command>();
         List<BuildAction> buildStright = new List<BuildAction>() { new BuildAction(TrackType.Stright), new BuildAction(TrackType.Stright), new BuildAction(TrackType.Stright) };
 
+        public RollerCoasterMaker()
+        {
+            Reset();
+        }
 
         public void Reset()
         {

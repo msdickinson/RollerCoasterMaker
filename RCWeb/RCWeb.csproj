@@ -13,4 +13,8 @@
     <DotNetCliToolReference Include="Microsoft.AspNetCore.Blazor.Cli" Version="0.2.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RCLibrary\RCLibrary.csproj" />
+  </ItemGroup>
+
 </Project>
