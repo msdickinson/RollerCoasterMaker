@@ -1,52 +1,50 @@
 ﻿@page "/"
-
-<div id="container"></div>
-<p>Tracks: @game.coaster.TrackCount</p>
+<div class="console"> <p style="color:whitesmoke">Tracks: @game.coaster.TrackCount</p></div>
 <div class="flex-container">
-    <img onclick="@BuildStright" src="/assets/images/stright64.png" class="rc_btn" />
     <img onclick="@BuildLeft" src="/assets/images/left64.png" class="rc_btn" />
-    <img onclick="@BuildRight"src="/assets/images/right64.png" class="rc_btn" />
+    <img onclick="@BuildStright" src="/assets/images/stright64.png" class="rc_btn" />
+    <img onclick="@BuildRight" src="/assets/images/right64.png" class="rc_btn" />
     <img onclick="@BuildUp" src="/assets/images/up64.png" class="rc_btn" />
     <img onclick="@BuildDown" src="/assets/images/down64.png" class="rc_btn" />
     <img onclick="@Back" src="/assets/images/back64.png" class="rc_btn" />
 </div>
 
 @functions {
-    RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
+RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
 
-    void Reset()
-    {
-        game.Reset();
-    }
-    void BuildStright()
-    {
+void Reset()
+{
+    game.Reset();
+}
+void BuildStright()
+{
 
-        game.BuildStright();
+    game.BuildStright();
 
-    }
-    void BuildLeft()
-    {
-        game.BuildLeft();
-    }
-    void BuildRight()
-    {
-        game.BuildRight();
-    }
-    void BuildUp()
-    {
-        game.BuildUp();
-    }
-    void BuildDown()
-    {
-        game.BuildDown();
-    }
-    void Back()
-    {
-        game.Back();
-    }
-    void Log()
-    {
-        game.Log();
-    }
+}
+void BuildLeft()
+{
+    game.BuildLeft();
+}
+void BuildRight()
+{
+    game.BuildRight();
+}
+void BuildUp()
+{
+    game.BuildUp();
+}
+void BuildDown()
+{
+    game.BuildDown();
+}
+void Back()
+{
+    game.Back();
+}
+void Log()
+{
+    game.Log();
+}
 
 }
