@@ -2,7 +2,11 @@
     overflow: hidden;
     margin: 0;
     padding: 0;
-    background-color: #ADD8E6;
+    background-color: rgb(41, 41, 41);
+}
+console {
+    background-color: rgb(0, 191, 255);
+   
 }
 
 p {
@@ -11,6 +15,7 @@ p {
 }
 
 .left,
+
 .right {
     position: absolute;
     color: #fff;
@@ -48,9 +53,8 @@ a {
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-evenly;
-    background-color: #82A3A3;
-    border-top: 3px solid Black;
-    border-bottom: 3px solid Black;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-top: 0px solid Black;
     height: 75px;
     width: 100%;
     position: fixed;
@@ -67,8 +71,5 @@ a {
     background: transparent;
     width: 64px;
     height: 64px;
+    margin: 2px;
 }
-
-    .rc_btn:hover {
-        transform: scale(1.15);
-    }
