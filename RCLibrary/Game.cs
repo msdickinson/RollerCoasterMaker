@@ -22,7 +22,7 @@ namespace RCLibrary
 
         public void Reset()
         {
-            coaster.Reset();
+            coaster = new Coaster();
             builder.StartTracks(coaster);
 
             Stopwatch sw = new Stopwatch();
