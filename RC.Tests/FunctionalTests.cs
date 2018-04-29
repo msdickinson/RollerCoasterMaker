@@ -11,7 +11,7 @@ namespace NUnitTest
         public void Reset()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             Assert.AreEqual(64, game.coaster.TrackCount);
         }
 
@@ -20,7 +20,7 @@ namespace NUnitTest
         public void DetectMinX()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             game.BuildLeft();
             game.BuildLeft();
             game.BuildLeft();
@@ -36,7 +36,7 @@ namespace NUnitTest
         public void DetectMinY()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             game.BuildLeft();
             game.BuildLeft();
             game.BuildLeft();
@@ -53,7 +53,7 @@ namespace NUnitTest
         public void DetectMinZ()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             game.BuildDown();
             Assert.AreEqual(game.builder.initialTaskResults, TaskResults.MinZ);
         }
@@ -62,7 +62,7 @@ namespace NUnitTest
         public void DetectMaxX()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             game.BuildRight();
             game.BuildRight();
             game.BuildRight();
@@ -83,7 +83,7 @@ namespace NUnitTest
         public void DetectMaxY()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             for (int i = 0; i < 45; i++)
             {
@@ -97,7 +97,7 @@ namespace NUnitTest
         public void DetectCollision()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             game.BuildStright();
             game.BuildStright();
@@ -129,7 +129,7 @@ namespace NUnitTest
         public void FixMinX()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             game.BuildLeft();
             game.BuildLeft();
             game.BuildLeft();
@@ -146,7 +146,7 @@ namespace NUnitTest
         public void FixMinY()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             game.BuildLeft();
             game.BuildLeft();
             game.BuildLeft();
@@ -164,7 +164,7 @@ namespace NUnitTest
         public void FixMinZ()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             game.BuildUp();
             game.BuildUp();
             game.BuildStright();
@@ -195,7 +195,7 @@ namespace NUnitTest
         public void FixMaxX()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             game.BuildRight();
             game.BuildRight();
             game.BuildRight();
@@ -218,7 +218,7 @@ namespace NUnitTest
         public void FixMaxY()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             for (int i = 0; i < 45; i++)
             {
@@ -233,7 +233,7 @@ namespace NUnitTest
         public void FixTrackCollison()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             for (int i = 0; i < 6; i++)
             {
@@ -251,7 +251,7 @@ namespace NUnitTest
         public void BuildStright()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             game.BuildStright();
             Assert.AreEqual(67, game.coaster.TrackCount);
@@ -260,7 +260,7 @@ namespace NUnitTest
         public void BuildLeft()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             game.BuildLeft();
             Assert.AreEqual(67, game.coaster.TrackCount);
@@ -269,7 +269,7 @@ namespace NUnitTest
         public void BuildRight()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             game.BuildRight();
             Assert.AreEqual(67, game.coaster.TrackCount);
@@ -278,7 +278,7 @@ namespace NUnitTest
         public void BuildUp()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             game.BuildUp();
 
@@ -288,7 +288,7 @@ namespace NUnitTest
         public void BuildDown()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             game.BuildUp();
             game.BuildDown();
@@ -300,7 +300,7 @@ namespace NUnitTest
         public void RemoveChunk()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             game.BuildStright();
             game.Back();
@@ -310,7 +310,7 @@ namespace NUnitTest
         public void BuildLoop()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             for (int i = 0; i < 10; i++)
             {
                 game.BuildStright();
@@ -323,7 +323,7 @@ namespace NUnitTest
         public void BuildUpward()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             game.BuildUpWard();
 
             Assert.AreEqual(false, game.builder.lastBuildActionFail);
@@ -332,7 +332,7 @@ namespace NUnitTest
         public void BuildDownward()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             for (int i = 0; i < 4; i++)
             {
                 game.BuildUp();
@@ -350,7 +350,7 @@ namespace NUnitTest
         public void BuildFlaten()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
             for (int i = 0; i < 4; i++)
             {
                 game.BuildUp();
@@ -381,7 +381,7 @@ namespace NUnitTest
         public void BuildToPitch()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             game.BuildToPitch(new List<float>() { 90 });
 
@@ -391,7 +391,7 @@ namespace NUnitTest
         //public void BuildToX()
         //{
         //    RollerCoasterMaker game = new RollerCoasterMaker();
-        //    game.Reset();
+        //   
 
         //    float x = 500;
         //    float withinX = 100;
@@ -404,7 +404,7 @@ namespace NUnitTest
         //public void BuildToXY()
         //{
         //    RollerCoasterMaker game = new RollerCoasterMaker();
-        //    game.Reset();
+        //   
 
         //    float x = 500;
         //    float y = 500;
@@ -420,7 +420,7 @@ namespace NUnitTest
         //public void BuildToXYZ()
         //{
         //    RollerCoasterMaker game = new RollerCoasterMaker();
-        //    game.Reset();
+        //   
 
         //    float x = 500;
         //    float y = 500;
@@ -438,7 +438,7 @@ namespace NUnitTest
         //public void BuildToY()
         //{
         //    RollerCoasterMaker game = new RollerCoasterMaker();
-        //    game.Reset();
+        //   
 
         //    float y = 500;
         //    float withinY = 100;
@@ -451,7 +451,7 @@ namespace NUnitTest
         public void BuildToYaw()
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
-            game.Reset();
+           
 
             game.BuildToYaw(new List<float>() { 180 });
 
@@ -461,7 +461,7 @@ namespace NUnitTest
         //public void BuildToZ()
         //{
         //    RollerCoasterMaker game = new RollerCoasterMaker();
-        //    game.Reset();
+        //   
 
         //    float z = 500;
         //    float withinZ = 100;

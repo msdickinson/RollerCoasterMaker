@@ -1,7 +1,52 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<div id="container"></div>
+<p>Tracks: @game.coaster.TrackCount</p>
+<div class="flex-container">
+    <img onclick="@BuildStright" src="/assets/images/stright64.png" class="rc_btn" />
+    <img onclick="@BuildLeft" src="/assets/images/left64.png" class="rc_btn" />
+    <img onclick="@BuildRight"src="/assets/images/right64.png" class="rc_btn" />
+    <img onclick="@BuildUp" src="/assets/images/up64.png" class="rc_btn" />
+    <img onclick="@BuildDown" src="/assets/images/down64.png" class="rc_btn" />
+    <img onclick="@Back" src="/assets/images/back64.png" class="rc_btn" />
+</div>
 
-Welcome to your new app.
+@functions {
+    RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    void Reset()
+    {
+        game.Reset();
+    }
+    void BuildStright()
+    {
+
+        game.BuildStright();
+
+    }
+    void BuildLeft()
+    {
+        game.BuildLeft();
+    }
+    void BuildRight()
+    {
+        game.BuildRight();
+    }
+    void BuildUp()
+    {
+        game.BuildUp();
+    }
+    void BuildDown()
+    {
+        game.BuildDown();
+    }
+    void Back()
+    {
+        game.Back();
+    }
+    void Log()
+    {
+        game.Log();
+    }
+
+}
