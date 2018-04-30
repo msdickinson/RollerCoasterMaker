@@ -64,12 +64,7 @@ function updateTracks() {
     }
     trackMeshs = new Array();
 
-    CreatesTracks([
-        { x: 0, y: 0, z: 0, yaw: 0, pitch: 0 },
-        { x: 7.7, y: 0, z: 0, yaw: 0, pitch: 0 },
-        { x: 15.4, y: 0, z: 0, yaw: 0, pitch: 0 },
-        { x: 23.1, y: 0, z: 0, yaw: 0, pitch: 0 }
-    ], false);
+    CreatesTracks([{ x: 0, y: 0, z: 0, yaw: 0, pitch: 0 }, { x: 0, y: 0, z: 100, yaw: 0, pitch: 0 }], false);
     CreatesTracks([], ture);
 
 }
@@ -99,14 +94,13 @@ function CreateTrack(x, y, z, yaw, pitch, color) {
     trackMesh.scale.z = .135;
 
     //X, Y, Z
-    trackMesh.position.x = -x * .025;
-    trackMesh.position.y = z * .025;
-    trackMesh.position.z = y * .025;
+    trackMesh.position.x = x;
+    trackMesh.position.y = y;
+    trackMesh.position.z = z;
 
-    //Rotate
-    trackMesh.rotation.x = THREE.Math.degToRad(pitch);  //Pitch
-    trackMesh.rotation.y = THREE.Math.degToRad(yaw + 90);
-    trackMesh.rotation.z = 0; //Roll
+    //Yaw, Pitch (Convert To Radian)
+    var yaw = yaw * Math.PI / 180;
+    var pitch = Track.Orientation.Pitch * Math.PI / 180;
 
     //Shadow
     trackMesh.traverse(function (object) {

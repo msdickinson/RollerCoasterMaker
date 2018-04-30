@@ -82,7 +82,7 @@ a {
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: url('https://image.ibb.co/dJ0XKH/Splash_Screen_Image.jpg');
+    background-image: url('../assets/images/splashscreenimage.gif');
     background-repeat: no-repeat;
     background-size: contain;
 }
