@@ -70,7 +70,7 @@ function updateTracks() {
         { x: 15.4, y: 0, z: 0, yaw: 0, pitch: 0 },
         { x: 23.1, y: 0, z: 0, yaw: 0, pitch: 0 }
     ], false);
-    CreatesTracks([], ture);
+  //  CreatesTracks([], true);
 
 }
 
