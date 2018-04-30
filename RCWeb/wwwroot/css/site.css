@@ -76,6 +76,8 @@ a {
 
 .loading {
     position: absolute;
+    margin: auto;
+    background-position: center center;
     top: 0;
     right: 0;
     bottom: 0;
