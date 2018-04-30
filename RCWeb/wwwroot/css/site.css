@@ -73,3 +73,14 @@ a {
     height: 64px;
     margin: 2px;
 }
+
+.loading {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: url('https://image.ibb.co/dJ0XKH/Splash_Screen_Image.jpg');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
