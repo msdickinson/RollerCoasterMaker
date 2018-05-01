@@ -6,14 +6,39 @@
     <link href="css/site.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/assets/images/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+
+    <link rel="preload" as="image" href="/assets/images/splashscreenimage.png" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="preload" as="script" href="/_framework/wasm/_framework/wasm/mono.js" />
+    <link rel="preload" as="script" href="/_framework/wasm/mono.wasm" />
+    <link rel="preload" as="script" href="/_framework/_bin/mscorlib.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/System.Core.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/RCLibrary.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/RCWeb.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/netstandard.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.Browser.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/System.Net.Http.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.dll" />
+    <link rel="preload" as="script" href="/_framework/_bin/System.dll" />
+    <link rel="preload" as="script" href="/assets/layout.json" />
+
 </head>
 <body>
-
-    <app>    
-        <center>
-            <div class="loading"></div>
-        </center>
+    <app>
     </app>
+    <div class="preloader-wrap">
+        <div class="loading"></div>
+        <div class="percentage" id="precent"></div>
+        <div class="loader">
+
+            <div class="trackbar">
+                <div class="loadbar"></div>
+            </div>
+            <div class="glow"></div>
+        </div>
+    </div>
     <script src="css/bootstrap/bootstrap-native.min.js"></script>
     <script type="blazor-boot">
     </script>
@@ -21,5 +46,64 @@
     <script src="js/threex.windowresize.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        $(document).ready(function () {
+            var width = 100,
+                perfData = window.performance.timing, // The PerformanceTiming interface represents timing-related performance information for the given page.
+                EstimatedTime = -(perfData.loadEventEnd - perfData.navigationStart),
+                time = parseInt((EstimatedTime / 1000) % 60) * 100;
+
+            // Loadbar Animation
+            $(".loadbar").animate({
+                width: width + "%"
+            }, time);
+
+            // Loadbar Glow Animation
+            $(".glow").animate({
+                width: width + "%"
+            }, time);
+
+            // Percentage Increment Animation
+            var PercentageID = $("#precent"),
+                start = 0,
+                end = 100,
+                durataion = time;
+            animateValue(PercentageID, start, end, durataion);
+
+            function animateValue(id, start, end, duration) {
+
+                var range = end - start,
+                    current = start,
+                    increment = end > start ? 1 : -1,
+                    stepTime = Math.abs(Math.floor(duration / range)),
+                    obj = $(id);
+
+                var timer = setInterval(function () {
+                    current += increment;
+
+                    if (current == end) {
+                        clearInterval(timer);
+                    }
+                }, stepTime);
+            }
+
+            // Fading Out Loadbar on Finised
+            setTimeout(function () {
+                $('.preloader-wrap').fadeOut(300);
+            }, time);
+        });
+    </script>
+    <script>
+        Blazor.registerFunction('ContentPackage.CoasterUpdate', function (data) {
+            CoasterUpdate(data);
+            console.log(data);
+        });
+    </script>
+    <link rel="preload" as="image" href="/assets/images/stright64.png" />
+    <link rel="preload" as="image" href="/assets/images/left64.png" />
+    <link rel="preload" as="image" href="/assets/images/right64.png" />
+    <link rel="preload" as="image" href="/assets/images/up64.png" />
+    <link rel="preload" as="image" href="/assets/images/down64.png" />
+    <link rel="preload" as="image" href="/assets/images/back64.png" />
 </body>
 </html>

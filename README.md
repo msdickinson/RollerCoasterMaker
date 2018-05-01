@@ -7,4 +7,4 @@ Create and ride a roller coaster
 
 http://www.rollercoastermaker.com/
 
-The Project is a work in progress, no tracks render at the moment.
+The Project is a work in progress

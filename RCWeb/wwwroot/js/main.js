@@ -49,37 +49,29 @@ function init() {
         trackGeometry = geometry;
         trackMaterials = materials;
         track = new THREE.Mesh(geometry, materials);
-        updateTracks();
+        track.traverse(function (object) {
+            if (object instanceof THREE.Mesh) {
+                object.castShadow = true;
+                object.receiveShadow = true;
+            }
+        });
     });
-
-
 	skybox();
 }
-
-function updateTracks() {
-
-    var totalTracks = trackMeshs.length;
-    for (var i = 0; i < totalTracks; i++) {
-        scene.remove(trackMeshs[i]);
+function CoasterUpdate(update) {
+    for (var i = 0; i < update.RemovedTracksCount; i++) {
+        scene.remove(trackMeshs[trackMeshs.length - 1]);
+        trackMeshs.pop();
     }
-    trackMeshs = new Array();
-
-    CreatesTracks([
-        { x: 0, y: 0, z: 0, yaw: 0, pitch: 0 },
-        { x: 7.7, y: 0, z: 0, yaw: 0, pitch: 0 },
-        { x: 15.4, y: 0, z: 0, yaw: 0, pitch: 0 },
-        { x: 23.1, y: 0, z: 0, yaw: 0, pitch: 0 }
-    ], false);
-  //  CreatesTracks([], true);
-
+    CreatesTracks(update.NewTracks, false);
 }
-
 function CreatesTracks(tracks, color) {
     for (var i = 0; i < tracks.length; i++) {
-        trackMeshs.push(CreateTrack(tracks[i].x, tracks[i].y, tracks[i].z, tracks[i].yaw, tracks[i].pitch, color));
+        //[ TO DO ] Determine Color By location in Array
+        trackMeshs.push(CreateTrack(tracks[i], false));
     }
 }
-function CreateTrack(x, y, z, yaw, pitch, color) {
+function CreateTrack(track, color) {
     var trackMesh;
 
     //Material
@@ -94,19 +86,23 @@ function CreateTrack(x, y, z, yaw, pitch, color) {
     trackMesh = new THREE.Mesh(trackGeometry, material);
 
     //Scale
-    trackMesh.scale.x = .135;
-    trackMesh.scale.y = .135;
-    trackMesh.scale.z = .135;
+    //trackMesh.scale.x = .190;
+    //trackMesh.scale.y = .190;
+    //trackMesh.scale.z = .190;
+    trackMesh.scale.x = .250;
+    trackMesh.scale.y = .250;
+    trackMesh.scale.z = .250;
 
     //X, Y, Z
-    trackMesh.position.x = -x * .025;
-    trackMesh.position.y = z * .025;
-    trackMesh.position.z = y * .025;
+    trackMesh.position.x = -track.X * .036 + 18.5;
+    trackMesh.position.y = track.Z * .036;
+    trackMesh.position.z = track.Y * .036 + 8.75;
 
     //Rotate
-    trackMesh.rotation.x = THREE.Math.degToRad(pitch);  //Pitch
-    trackMesh.rotation.y = THREE.Math.degToRad(yaw + 90);
-    trackMesh.rotation.z = 0; //Roll
+    trackMesh.eulerOrder = 'ZYX';
+    trackMesh.rotation.x = THREE.Math.degToRad(track.Pitch);  //Pitch
+    trackMesh.rotation.y = THREE.Math.degToRad(track.Yaw + 90);
+    trackMesh.rotation.z = 0;
 
     //Shadow
     trackMesh.traverse(function (object) {
@@ -122,7 +118,6 @@ function CreateTrack(x, y, z, yaw, pitch, color) {
 
     return trackMesh;
 }
-
 function animate() {
 	requestAnimationFrame( animate );
     controls.update();

@@ -10,41 +10,49 @@
 </div>
 
 @functions {
-RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
+    RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
 
-void Reset()
-{
-    game.Reset();
-}
-void BuildStright()
-{
-
-    game.BuildStright();
-
-}
-void BuildLeft()
-{
-    game.BuildLeft();
-}
-void BuildRight()
-{
-    game.BuildRight();
-}
-void BuildUp()
-{
-    game.BuildUp();
-}
-void BuildDown()
-{
-    game.BuildDown();
-}
-void Back()
-{
-    game.Back();
-}
-void Log()
-{
-    game.Log();
-}
-
+    void Reset()
+    {
+        game.Reset();
+        SendCoaster();
+    }
+    void BuildStright()
+    {
+        game.BuildStright();
+        SendCoaster();
+    }
+    void BuildLeft()
+    {
+        game.BuildLeft();
+        SendCoaster();
+    }
+    void BuildRight()
+    {
+        game.BuildRight();
+        SendCoaster();
+    }
+    void BuildUp()
+    {
+        game.BuildUp();
+        SendCoaster();
+    }
+    void BuildDown()
+    {
+        game.BuildDown();
+        SendCoaster();
+    }
+    void Back()
+    {
+        game.Back();
+        SendCoaster();
+    }
+    void Log()
+    {
+        game.Log();
+    }
+    void SendCoaster()
+    {
+        ContentPackage.CoasterUpdate(game.coaster.GetLastCoasterUpdate());
+    }
 }
