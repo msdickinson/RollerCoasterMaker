@@ -37,6 +37,7 @@
                 <div class="loadbar"></div>
             </div>
             <div class="glow"></div>
+            <center><h3 id="loadingText">Downloading Files</h3></center>
         </div>
     </div>
     <script type="blazor-boot">
@@ -48,6 +49,7 @@
     <script>
         let BlazorPageLoaded = false;
         $(document).ready(function () {
+  
             var width = 50,
                 perfData = window.performance.timing, // The PerformanceTiming interface represents timing-related performance information for the given page.
                 EstimatedTime = -(perfData.loadEventEnd - perfData.navigationStart),
@@ -87,12 +89,13 @@
                 }, stepTime);
             }
 
-
+            document.getElementById("loadingText").textContent = "Loading Game";
         });
     </script>
     <script>
         Blazor.registerFunction('ContentPackage.Loaded', function (data) {
             BlazorPageLoaded = true;
+            document.getElementById("loadingText").textContent = "Done";
             $(".loadbar").animate({
                 width: 100 + "%"
             }, .2);
