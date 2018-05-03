@@ -11,6 +11,14 @@
 
 @functions {
     RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
+    string loaded = "";
+    protected override void OnInit()
+    {
+        //Will Get Starting Tracks
+        ContentPackage.CoasterUpdate(game.coaster.GetLastCoasterUpdate());
+        ContentPackage.Loaded(loaded);
+        //    return UpdateForecasts();
+    }
 
     void Reset()
     {

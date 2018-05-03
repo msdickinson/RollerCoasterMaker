@@ -5,12 +5,12 @@
     <title>Roller Coaster Maker</title>
     <link href="css/site.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/assets/images/favicon.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="preload" as="image" href="/assets/images/splashscreenimage.png" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="preload" as="script" href="/_framework/wasm/_framework/wasm/mono.js" />
     <link rel="preload" as="script" href="/_framework/wasm/mono.wasm" />
+    <link rel="preload" as="script" href="/_framework/_bin/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll" />
     <link rel="preload" as="script" href="/_framework/_bin/mscorlib.dll" />
     <link rel="preload" as="script" href="/_framework/_bin/System.Core.dll" />
     <link rel="preload" as="script" href="/_framework/_bin/RCLibrary.dll" />
@@ -18,7 +18,7 @@
     <link rel="preload" as="script" href="/_framework/_bin/netstandard.dll" />
     <link rel="preload" as="script" href="/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
     <link rel="preload" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.Browser.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll" />
+
     <link rel="preload" as="script" href="/_framework/_bin/System.Net.Http.dll" />
     <link rel="preload" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.dll" />
     <link rel="preload" as="script" href="/_framework/_bin/System.dll" />
@@ -39,7 +39,6 @@
             <div class="glow"></div>
         </div>
     </div>
-    <script src="css/bootstrap/bootstrap-native.min.js"></script>
     <script type="blazor-boot">
     </script>
     <script src="js/three.min.js"></script>
@@ -47,11 +46,12 @@
     <script src="js/OrbitControls.js"></script>
     <script src="js/main.js"></script>
     <script>
+        let BlazorPageLoaded = false;
         $(document).ready(function () {
-            var width = 100,
+            var width = 50,
                 perfData = window.performance.timing, // The PerformanceTiming interface represents timing-related performance information for the given page.
                 EstimatedTime = -(perfData.loadEventEnd - perfData.navigationStart),
-                time = parseInt((EstimatedTime / 1000) % 60) * 100;
+                time = parseInt((EstimatedTime / 1000) % 60);
 
             // Loadbar Animation
             $(".loadbar").animate({
@@ -73,8 +73,8 @@
             function animateValue(id, start, end, duration) {
 
                 var range = end - start,
-                    current = start,
-                    increment = end > start ? 1 : -1,
+                    current = start;
+                    increment = end > start ? 1 : -1;
                     stepTime = Math.abs(Math.floor(duration / range)),
                     obj = $(id);
 
@@ -87,13 +87,20 @@
                 }, stepTime);
             }
 
-            // Fading Out Loadbar on Finised
-            setTimeout(function () {
-                $('.preloader-wrap').fadeOut(300);
-            }, time);
+
         });
     </script>
     <script>
+        Blazor.registerFunction('ContentPackage.Loaded', function (data) {
+            BlazorPageLoaded = true;
+            $(".loadbar").animate({
+                width: 100 + "%"
+            }, .2);
+            // Fading Out Loadbar on Finised
+           $('.preloader-wrap').fadeOut(300);
+
+            console.log(data);
+        });
         Blazor.registerFunction('ContentPackage.CoasterUpdate', function (data) {
             CoasterUpdate(data);
             console.log(data);

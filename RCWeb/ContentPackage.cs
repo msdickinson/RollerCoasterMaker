@@ -22,5 +22,11 @@ using System.Threading.Tasks;
                 CoasterUpdateIdentifier,
                 coasterUpdate);
         }
+
+        const string LoadedIdentifier = "ContentPackage.Loaded";
+        public static string Loaded(string loaded)
+        {
+            return RegisteredFunction.Invoke<string>(LoadedIdentifier, loaded);
+        }
     }
 }

@@ -86,17 +86,14 @@ function CreateTrack(track, color) {
     trackMesh = new THREE.Mesh(trackGeometry, material);
 
     //Scale
-    //trackMesh.scale.x = .190;
-    //trackMesh.scale.y = .190;
-    //trackMesh.scale.z = .190;
-    trackMesh.scale.x = .250;
-    trackMesh.scale.y = .250;
-    trackMesh.scale.z = .250;
+    trackMesh.scale.x = .205;
+    trackMesh.scale.y = .205;
+    trackMesh.scale.z = .205;
 
     //X, Y, Z
     trackMesh.position.x = -track.X * .036 + 18.5;
     trackMesh.position.y = track.Z * .036;
-    trackMesh.position.z = track.Y * .036 + 8.75;
+    trackMesh.position.z = track.Y * .036 + 8.55;
 
     //Rotate
     trackMesh.eulerOrder = 'ZYX';
