@@ -37,7 +37,6 @@
                 <div class="loadbar"></div>
             </div>
             <div class="glow"></div>
-            <center><h3 id="loadingText">Downloading Files</h3></center>
         </div>
     </div>
     <script type="blazor-boot">
@@ -77,19 +76,20 @@
                 var range = end - start,
                     current = start,
                     increment = end > start ? 1 : -1,
-                    stepTime = Math.abs(Math.floor(duration / range)),
-                    obj = $(id);
+                    stepTime = Math.abs(Math.floor(duration / range));
+                   // obj = $(id);
 
                 var timer = setInterval(function () {
                     if (BlazorPageLoaded) {
                         clearInterval(timer);
                     }
                     current += increment;
-                    $(obj).text(current + "%");
+                   // $(obj).text(current + "%");
                     //obj.innerHTML = current;
                     if (current == end) {
                         clearInterval(timer);
-                        document.getElementById("loadingText").textContent = "Loading Game";
+                //        document.getElementById("loadingText").textContent = "Loading Game";
+                        $(".loadbar").stop();
                         $(".loadbar").animate({
                             width: 90 + "%"
                         }, 5000);
@@ -106,7 +106,8 @@
             BlazorPageLoaded = true;
             let finalLoadTime = 200;
 
-            document.getElementById("loadingText").textContent = "Done";
+          //  document.getElementById("loadingText").textContent = "Done";
+            $(".loadbar").stop();
             $(".loadbar").animate({
                 width: 100 + "%"
             }, finalLoadTime);
