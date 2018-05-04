@@ -76,14 +76,14 @@ function CreateTrack(track, color) {
 
     //Material
     if (color == true) {
-        material = new THREE.MeshBasicMaterial({ color: color, wireframe: false });
+        material = [{ color: color, wireframe: false }];
     }
     else {
-        material = new THREE.MeshFaceMaterial(trackMaterials);
+      //  material = [trackMaterials];
     }
 
     //Create Mesh
-    trackMesh = new THREE.Mesh(trackGeometry, material);
+    trackMesh = new THREE.Mesh(trackGeometry, trackMaterials);
 
     //Scale
     trackMesh.scale.x = .205;
@@ -96,7 +96,7 @@ function CreateTrack(track, color) {
     trackMesh.position.z = track.Y * .036 + 8.55;
 
     //Rotate
-    trackMesh.eulerOrder = 'ZYX';
+    trackMesh.rotation.order = 'ZYX';
     trackMesh.rotation.x = THREE.Math.degToRad(track.Pitch);  //Pitch
     trackMesh.rotation.y = THREE.Math.degToRad(track.Yaw + 90);
     trackMesh.rotation.z = 0;
@@ -128,23 +128,21 @@ function initLights() {
    var light;
 
    light = new THREE.DirectionalLight(0xdfebff, 2.2);
-    light.position.set(0, 400, 50);
-    light.position.multiplyScalar(1);
+   light.position.set(0, 400, 50);
+   light.position.multiplyScalar(1);
 
-    light.castShadow = true;
+   light.castShadow = true;
 
-    light.shadowMapWidth = 5024;
-   light.shadowMapHeight = 5024;
+   light.shadow.mapSize.width = 5024;
+   light.shadow.mapSize.height = 5024;
 
     var d = 200;
     light.position.y = 4800;
-    light.shadowCameraLeft = -1000;
-    light.shadowCameraRight = 1000;
-    light.shadowCameraTop = 1000;
-    light.shadowCameraBottom = -1000;
-
-    light.shadowCameraFar = 5000;
-    light.shadowDarkness = 0.2;
+    light.shadow.camera.left = -1000;
+    light.shadow.camera.right = 1000;
+    light.shadow.camera.top = 1000;
+    light.shadow.camera.bottom = -1000;
+    light.shadow.camera.far = 5000;
 
     scene.add(light);
 
@@ -172,7 +170,6 @@ function skybox(){
 		new THREE.MeshBasicMaterial( {map:new THREE.TextureLoader().load("./assets/textures/right.png"), side: THREE.DoubleSide}),
 		new THREE.MeshBasicMaterial( {map:new THREE.TextureLoader().load("./assets/textures/left.png"), side: THREE.DoubleSide}),
 	];
-var cubeMaterial = new THREE.MeshFaceMaterial( cubeMaterials );
-var cube = new THREE.Mesh(geometry, cubeMaterial);
+    var cube = new THREE.Mesh(geometry, cubeMaterials);
 scene.add( cube);
 }

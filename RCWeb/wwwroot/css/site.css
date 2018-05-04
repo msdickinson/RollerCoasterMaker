@@ -58,13 +58,24 @@ a {
     justify-content: space-evenly;
     background-color: rgba(0, 0, 0, 0.5);
     border-top: 0px solid Black;
-    height: 75px;
+    height: 50px;
     width: 100%;
     position: fixed;
     bottom: 0px;
     left: 0px;
 }
-
+.flex-container-two {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-top: 0px solid Black;
+    height: 50px;
+    width: 100%;
+    position: fixed;
+    bottom: 75px;
+    left: 0px;
+}
 .rc-button:active {
     opacity: 0.5;
 }

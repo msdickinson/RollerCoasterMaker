@@ -8,16 +8,33 @@
     <img onclick="@BuildDown" src="/assets/images/down64.png" class="rc_btn" />
     <img onclick="@Back" src="/assets/images/back64.png" class="rc_btn" />
 </div>
-
+<div class="flex-container-two">
+    <img onclick="@BuildLeft" src="/assets/images/left64.png" class="rc_btn" />
+    <img onclick="@BuildStright" src="/assets/images/stright64.png" class="rc_btn" />
+    <img onclick="@BuildRight" src="/assets/images/right64.png" class="rc_btn" />
+    <img onclick="@BuildUp" src="/assets/images/up64.png" class="rc_btn" />
+    <img onclick="@BuildDown" src="/assets/images/down64.png" class="rc_btn" />
+    <img onclick="@Back" src="/assets/images/back64.png" class="rc_btn" />
+</div>
 @functions {
     RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
     string loaded = "";
-    protected override void OnInit()
+
+    //protected override Task OnAfterRenderAsync()
+    //{
+    //    // protected override void OnAfterRender()
+    //    var t = Task.Run(async () => {
+    //        await Task.Delay(8000);
+    //        ContentPackage.CoasterUpdate(game.coaster.GetLastCoasterUpdate());
+    //        ContentPackage.Loaded(loaded);
+    //    });
+    //    return t;
+    //}
+
+    protected override void OnAfterRender()
     {
-        //Will Get Starting Tracks
         ContentPackage.CoasterUpdate(game.coaster.GetLastCoasterUpdate());
         ContentPackage.Loaded(loaded);
-        //    return UpdateForecasts();
     }
 
     void Reset()

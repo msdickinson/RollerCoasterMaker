@@ -5,10 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Builder\Detect\" />
+    <Compile Remove="Builder\Detect\**" />
+    <Compile Remove="Misc\**" />
+    <EmbeddedResource Remove="Builder\Detect\**" />
+    <EmbeddedResource Remove="Misc\**" />
+    <None Remove="Builder\Detect\**" />
+    <None Remove="Misc\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Builder\Task\Addtional\" />
     <Folder Include="Builder\Task\Advanced\" />
-    <Folder Include="Misc\" />
   </ItemGroup>
 
 </Project>

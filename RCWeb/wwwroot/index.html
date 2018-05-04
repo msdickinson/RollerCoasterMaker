@@ -8,21 +8,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="preload" as="image" href="/assets/images/splashscreenimage.png" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="preload" as="script" href="/_framework/wasm/_framework/wasm/mono.js" />
-    <link rel="preload" as="script" href="/_framework/wasm/mono.wasm" />
-    <link rel="preload" as="script" href="/_framework/_bin/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/mscorlib.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/System.Core.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/RCLibrary.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/RCWeb.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/netstandard.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.Browser.dll" />
+    <!--<link rel="prefetch" as="script" href="/_framework/wasm/_framework/wasm/mono.js" />-->
+    <link rel="prefetch" as="script" href="/_framework/wasm/mono.wasm" />
+    <!--<link rel="prefetch" as="script" href="/_framework/_bin/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll" />-->
+    <link rel="prefetch" as="script" href="/_framework/_bin/mscorlib.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/System.Core.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/RCLibrary.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/RCWeb.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/netstandard.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.Browser.dll" />
 
-    <link rel="preload" as="script" href="/_framework/_bin/System.Net.Http.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.dll" />
-    <link rel="preload" as="script" href="/_framework/_bin/System.dll" />
-    <link rel="preload" as="script" href="/assets/layout.json" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/System.Net.Http.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/System.dll" />
+    <link rel="prefetch" as="script" href="/assets/layout.json" />
 
 </head>
 <body>
@@ -49,11 +49,10 @@
     <script>
         let BlazorPageLoaded = false;
         $(document).ready(function () {
-  
             var width = 50,
                 perfData = window.performance.timing, // The PerformanceTiming interface represents timing-related performance information for the given page.
                 EstimatedTime = -(perfData.loadEventEnd - perfData.navigationStart),
-                time = parseInt((EstimatedTime / 1000) % 60);
+                time = parseInt((EstimatedTime / 1000) % 60) * 100;
 
             // Loadbar Animation
             $(".loadbar").animate({
@@ -65,6 +64,7 @@
                 width: width + "%"
             }, time);
 
+
             // Percentage Increment Animation
             var PercentageID = $("#precent"),
                 start = 0,
@@ -75,32 +75,44 @@
             function animateValue(id, start, end, duration) {
 
                 var range = end - start,
-                    current = start;
-                    increment = end > start ? 1 : -1;
+                    current = start,
+                    increment = end > start ? 1 : -1,
                     stepTime = Math.abs(Math.floor(duration / range)),
                     obj = $(id);
 
                 var timer = setInterval(function () {
+                    if (BlazorPageLoaded) {
+                        clearInterval(timer);
+                    }
                     current += increment;
-
+                    $(obj).text(current + "%");
+                    //obj.innerHTML = current;
                     if (current == end) {
                         clearInterval(timer);
+                        document.getElementById("loadingText").textContent = "Loading Game";
+                        $(".loadbar").animate({
+                            width: 90 + "%"
+                        }, 5000);
                     }
                 }, stepTime);
             }
 
-            document.getElementById("loadingText").textContent = "Loading Game";
+
+
         });
     </script>
     <script>
         Blazor.registerFunction('ContentPackage.Loaded', function (data) {
             BlazorPageLoaded = true;
+            let finalLoadTime = 200;
+
             document.getElementById("loadingText").textContent = "Done";
             $(".loadbar").animate({
                 width: 100 + "%"
-            }, .2);
-            // Fading Out Loadbar on Finised
-           $('.preloader-wrap').fadeOut(300);
+            }, finalLoadTime);
+            setTimeout(function () {
+                $('.preloader-wrap').fadeOut(300);
+            }, finalLoadTime);
 
             console.log(data);
         });
