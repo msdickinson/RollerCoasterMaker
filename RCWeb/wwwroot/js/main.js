@@ -5,22 +5,27 @@ init();
 animate();
 
 function init() {
-	scene = new THREE.Scene();
 
-	/* Camera */
-	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 500000 );
-	camera.position.z = 2;
-	camera.position.set(0, 3.5, 5);
+
+    scene = new THREE.Scene();
+
+    /* Camera */
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 500000);
+    camera.position.z = 2;
+    camera.position.set(0, 3.5, 5);
     camera.lookAt(scene.position);
 
-	/* Lights */
-	initLights();
-	
-	/* Renderer */
-	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	document.body.appendChild( renderer.domElement );
-	
+    /* Lights */
+    initLights();
+
+    //TEST
+
+    /* Renderer */
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    document.body.appendChild(renderer.domElement);
+
 	/* Resize */
 	THREEx.WindowResize(renderer, camera)
 
