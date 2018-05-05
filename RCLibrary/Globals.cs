@@ -38,7 +38,9 @@ namespace RCLibrary
         public const int X_Regions = 300;
         public const int Y_Regions = 300;
         public const int Z_Regions = 100;
+
         //Track
+        public const int MAX_TRACKS = 5000;
         public const float TRACK_LENGTH_2X = (float)7.7;
         public const float TRACK_LENGTH = (float)7.7;
         public const float TRACK_HIGHT = (float)1.2;

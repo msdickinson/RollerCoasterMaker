@@ -100,6 +100,7 @@
         });
     </script>
     <script>
+        let dataReference = null;
         Blazor.registerFunction('ContentPackage.Loaded', function (data) {
             BlazorPageLoaded = true;
             let finalLoadTime = 200;
@@ -112,12 +113,16 @@
             setTimeout(function () {
                 $('.preloader-wrap').fadeOut(300);
             }, finalLoadTime);
-
-            console.log(data);
         });
-        Blazor.registerFunction('ContentPackage.CoasterUpdate', function (data) {
-            CoasterUpdate(data);
-            console.log(data);
+
+        Blazor.registerFunction('ContentPackage.CoasterData', function (pointerToData) {
+            dataReference = Blazor.platform.getArrayEntryPtr(pointerToData, 0, 4);
+            console.log(dataReference);
+        });
+        Blazor.registerFunction('ContentPackage.Update', function (added, removed) {
+            console.log(added)
+            console.log(removed)
+            CoasterUpdate(added, removed);
         });
     </script>
     <link rel="preload" as="image" href="/assets/images/stright64.png" />

@@ -63,20 +63,27 @@ function init() {
     });
 	skybox();
 }
-function CoasterUpdate(update) {
-    for (var i = 0; i < update.RemovedTracksCount; i++) {
+function CoasterUpdate(added, removed) {
+    for (var i = 0; i < removed; i++) {
         scene.remove(trackMeshs[trackMeshs.length - 1]);
         trackMeshs.pop();
     }
-    CreatesTracks(update.NewTracks, false);
+    CreatesTracks(added, false);
 }
-function CreatesTracks(tracks, color) {
-    for (var i = 0; i < tracks.length; i++) {
+function CreatesTracks(added, color) {
+    for (var i = 0; i < added; i++) {
         //[ TO DO ] Determine Color By location in Array
-        trackMeshs.push(CreateTrack(tracks[i], false));
+
+        console.log("X : " + Blazor.platform.readFloatField(dataReference, (trackMeshs.length) * 20));
+        console.log("Y : " + Blazor.platform.readFloatField(dataReference, (trackMeshs.length) * 20 + 4));
+        console.log("Z : " + Blazor.platform.readFloatField(dataReference, (trackMeshs.length) * 20 + 8));
+        console.log("Yaw : " + Blazor.platform.readFloatField(dataReference, (trackMeshs.length) * 20 + 12));
+        console.log("Pitch : " + Blazor.platform.readFloatField(dataReference, (trackMeshs.length) * 20 + 16));
+
+        trackMeshs.push(CreateTrack((trackMeshs.length) * 20, false));
     }
 }
-function CreateTrack(track, color) {
+function CreateTrack(trackIndex, color) {
     var trackMesh;
 
     //Material
@@ -96,14 +103,19 @@ function CreateTrack(track, color) {
     trackMesh.scale.z = .205;
 
     //X, Y, Z
-    trackMesh.position.x = -track.X * .036 + 18.5;
-    trackMesh.position.y = track.Z * .036;
-    trackMesh.position.z = track.Y * .036 + 8.55;
+    trackMesh.position.x = -Blazor.platform.readFloatField(dataReference, trackIndex) * .036 + 18.5; //X
+    trackMesh.position.y = Blazor.platform.readFloatField(dataReference, trackIndex + 8) * .036; //Z
+    trackMesh.position.z = Blazor.platform.readFloatField(dataReference, trackIndex + 4) * .036 + 8.55; //Y
+    //Data[i * 5] = NewTracks[i].X;
+    //Data[i * 5 + 1] = NewTracks[i].Y;
+    //Data[i * 5 + 2] = NewTracks[i].Z;
+    //Data[i * 5 + 3] = NewTracks[i].Yaw;
+    //Data[i * 5 + 4] = NewTracks[i].Pitch;
 
     //Rotate
     trackMesh.rotation.order = 'ZYX';
-    trackMesh.rotation.x = THREE.Math.degToRad(track.Pitch);  //Pitch
-    trackMesh.rotation.y = THREE.Math.degToRad(track.Yaw + 90);
+    trackMesh.rotation.x = THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 16));  //Pitch
+    trackMesh.rotation.y = THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 12) + 90);
     trackMesh.rotation.z = 0;
 
     //Shadow

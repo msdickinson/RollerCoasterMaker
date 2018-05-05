@@ -7,20 +7,31 @@ using System.Threading.Tasks;
 
  namespace RCWeb
 {
-    public class Package
-    {
-        public Track[] tracks;
-        public int trackCount = 0;
-        public int lastChunk = 0;        
-    }
+
     public static class ContentPackage
     {
-        const string CoasterUpdateIdentifier = "ContentPackage.CoasterUpdate";
-        public static CoasterUpdate CoasterUpdate(CoasterUpdate coasterUpdate)
+        //const string CoasterUpdateIdentifier = "ContentPackage.CoasterUpdate";
+        //public static CoasterUpdate CoasterUpdate(CoasterUpdate coasterUpdate)
+        //{
+        //    return RegisteredFunction.Invoke<CoasterUpdate>(
+        //        CoasterUpdateIdentifier,
+        //        coasterUpdate);
+        //}
+
+        const string CoasterDataIdentifier = "ContentPackage.CoasterData";
+        public static string CoasterData(float[] data)
         {
-            return RegisteredFunction.Invoke<CoasterUpdate>(
+            return RegisteredFunction.InvokeUnmarshalled<float[], string>(
+                CoasterDataIdentifier,
+                data);
+        }
+
+        const string CoasterUpdateIdentifier = "ContentPackage.Update";
+        public static string CoasterUpdate(int added, int removed)
+        {
+            return RegisteredFunction.InvokeUnmarshalled<int, int, string>(
                 CoasterUpdateIdentifier,
-                coasterUpdate);
+                added, removed);
         }
 
         const string LoadedIdentifier = "ContentPackage.Loaded";

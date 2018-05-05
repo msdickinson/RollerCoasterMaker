@@ -34,6 +34,7 @@
     RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
     string loaded = "";
     string UISection = "Build";
+    bool firstRender = true;
     //protected override Task OnAfterRenderAsync()
     //{
     //    // protected override void OnAfterRender()
@@ -47,8 +48,13 @@
 
     protected override void OnAfterRender()
     {
-        ContentPackage.CoasterUpdate(game.coaster.GetLastCoasterUpdate());
-        ContentPackage.Loaded(loaded);
+        if(firstRender == true)
+        {
+            ContentPackage.CoasterData(game.coaster.Data);
+            ContentPackage.CoasterUpdate(game.coaster.LastNewTracks, game.coaster.LastRemovedTracks);
+            ContentPackage.Loaded(loaded);
+            firstRender = false;
+        }
     }
 
     void Reset()
@@ -98,6 +104,9 @@
     }
     void SendCoaster()
     {
-        ContentPackage.CoasterUpdate(game.coaster.GetLastCoasterUpdate());
+        if(game.coaster.LastBuildSucessful)
+        {
+            ContentPackage.CoasterUpdate(game.coaster.LastNewTracks, game.coaster.LastRemovedTracks);
+        }
     }
 }
