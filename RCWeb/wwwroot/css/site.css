@@ -20,7 +20,11 @@ p {
     margin: 0;
     padding: 0;
 }
-
+#stats {
+    position: fixed;
+    top: 0;
+    right: 0;
+}  
 .left,
 .right {
     position: absolute;

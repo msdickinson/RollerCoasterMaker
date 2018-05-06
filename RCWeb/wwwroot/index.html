@@ -7,6 +7,7 @@
     <link href="css/site.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/assets/images/favicon.png">
     <link rel="preload" as="image" href="/assets/images/splashscreenimage.png" />
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!--<link rel="prefetch" as="script" href="/_framework/wasm/_framework/wasm/mono.js" />-->
     <link rel="prefetch" as="script" href="/_framework/wasm/mono.wasm" />
@@ -39,6 +40,7 @@
     </div>
     <script type="blazor-boot">
     </script>
+    <script src="js/stats.min.js"></script>
     <script src="js/three.min.js"></script>
     <script src="js/threex.windowresize.js"></script>
     <script src="js/OrbitControls.js"></script>
@@ -75,18 +77,18 @@
                     current = start,
                     increment = end > start ? 1 : -1,
                     stepTime = Math.abs(Math.floor(duration / range));
-                   // obj = $(id);
+                // obj = $(id);
 
                 var timer = setInterval(function () {
                     if (BlazorPageLoaded) {
                         clearInterval(timer);
                     }
                     current += increment;
-                   // $(obj).text(current + "%");
+                    // $(obj).text(current + "%");
                     //obj.innerHTML = current;
                     if (current == end) {
                         clearInterval(timer);
-                //        document.getElementById("loadingText").textContent = "Loading Game";
+                        //        document.getElementById("loadingText").textContent = "Loading Game";
                         $(".loadbar").stop();
                         $(".loadbar").animate({
                             width: 90 + "%"
@@ -105,7 +107,7 @@
             BlazorPageLoaded = true;
             let finalLoadTime = 200;
 
-          //  document.getElementById("loadingText").textContent = "Done";
+            //  document.getElementById("loadingText").textContent = "Done";
             $(".loadbar").stop();
             $(".loadbar").animate({
                 width: 100 + "%"

@@ -1,6 +1,6 @@
 var controls, camera, scene, renderer, loader;
 var layout, track, trackMeshs, trackGeometry, trackMaterials;
-
+var stats;
 init();
 animate();
 
@@ -61,7 +61,11 @@ function init() {
             }
         });
     });
-	skybox();
+    skybox();
+
+    stats = new Stats();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(stats.dom);
 }
 function CoasterUpdate(added, removed) {
     for (var i = 0; i < removed; i++) {
@@ -133,10 +137,11 @@ function CreateTrack(trackIndex, color) {
     return trackMesh;
 }
 function animate() {
-	requestAnimationFrame( animate );
+    stats.begin();
     controls.update();
-	renderer.render( scene, camera );
-
+    renderer.render(scene, camera);
+    stats.end();
+    requestAnimationFrame(animate);
 }
 function initLights() {
    // var light = new THREE.AmbientLight(0xffffff, 0.3);
