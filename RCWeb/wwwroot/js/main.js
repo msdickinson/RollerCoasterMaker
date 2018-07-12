@@ -53,10 +53,10 @@ function init() {
 	/* Load Models */
     trackMeshs = new Array();
     var loader = new THREE.JSONLoader();
-    //loader.load('./assets/layout.json', function (geometry, materials) {
-    //    layout = new THREE.Mesh(geometry, materials);
-    //    scene.add(layout);
-    //});
+    loader.load('./assets/layout.json', function (geometry, materials) {
+        layout = new THREE.Mesh(geometry, materials);
+        scene.add(layout);
+    });
     loader.load('./assets/track.json', function (geometry, materials) {
         trackGeometry = geometry;
         trackMaterials = materials;
@@ -77,7 +77,7 @@ function init() {
 }
 
 function SetupTracksMatrix(geo, materials) {
-    var count = 2500;
+    var count = 1000;
    // geo.sortFacesByMaterialIndex();
     bufferGeometry = new THREE.BufferGeometry().fromGeometry(geo);
 
@@ -112,9 +112,9 @@ function SetupTracksMatrix(geo, materials) {
     //create the InstancedBufferAttributes from our float buffers
 
     //setDynamic(true) ?
-    translationAttribute = new THREE.InstancedBufferAttribute(new Float32Array(translation), 3).setDynamic(true);
-    rotationAttribute = new THREE.InstancedBufferAttribute(new Float32Array(rotation), 4).setDynamic(true);
-    scaleAttribute = new THREE.InstancedBufferAttribute(new Float32Array(scale), 3).setDynamic(true);
+    translationAttribute = new THREE.InstancedBufferAttribute(new Float32Array(translation), 3);
+    rotationAttribute = new THREE.InstancedBufferAttribute(new Float32Array(rotation), 4);
+    scaleAttribute = new THREE.InstancedBufferAttribute(new Float32Array(scale), 3);
     geometry.addAttribute('translation', translationAttribute);
     geometry.addAttribute('rotation', rotationAttribute);
     geometry.addAttribute('scale', scaleAttribute);
@@ -136,7 +136,7 @@ function SetupTracksMatrix(geo, materials) {
         vertexShader: vertexTextureShader,
         fragmentShader: fragmentTextureShader,
     });
-    mesh = new THREE.Mesh(geometry, material );
+    mesh = new THREE.Mesh(geometry, materialTexture );
 
     scene.add(mesh);
     animate();
