@@ -17,7 +17,7 @@ function init() {
     matrix = new THREE.Matrix4();
     me = matrix.elements;
     /* Camera */
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 500000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 5000);
     camera.position.z = 2;
     camera.position.set(0, 3.5/2, 5/2);
     camera.lookAt(scene.position);
@@ -77,7 +77,7 @@ function init() {
 }
 
 function SetupTracksMatrix(geo, materials) {
-    var count = 2;
+    var count = 2500;
    // geo.sortFacesByMaterialIndex();
     bufferGeometry = new THREE.BufferGeometry().fromGeometry(geo);
 
@@ -94,25 +94,30 @@ function SetupTracksMatrix(geo, materials) {
     euler = []
     var euler = new THREE.Euler();
     for (var i = 0; i < count; i++) {
-        translation.push(0, 0, 0);
-        scale.push(1, 1, 1);
+        translation.push(10000, 10000, 10000);
+        scale.push(.205, .205, .205);
         var e = new THREE.Euler();
 
         e.order = 'ZYX';
         e.x = THREE.Math.degToRad(0); // Pitch
-        e.y = THREE.Math.degToRad(i * 90 + 90); // Yaw
+        e.y = THREE.Math.degToRad(0 + 90); // Yaw
         e.z = 0;
 
         var quaternion = new THREE.Quaternion();
         quaternion.setFromEuler(e, false);
-
+        
         rotation.push(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
     }
 
     //create the InstancedBufferAttributes from our float buffers
-    geometry.addAttribute('translation', new THREE.InstancedBufferAttribute(new Float32Array(translation), 3));
-    geometry.addAttribute('rotation', new THREE.InstancedBufferAttribute(new Float32Array(rotation), 4));
-    geometry.addAttribute('scale', new THREE.InstancedBufferAttribute(new Float32Array(scale), 3));
+
+    //setDynamic(true) ?
+    translationAttribute = new THREE.InstancedBufferAttribute(new Float32Array(translation), 3).setDynamic(true);
+    rotationAttribute = new THREE.InstancedBufferAttribute(new Float32Array(rotation), 4).setDynamic(true);
+    scaleAttribute = new THREE.InstancedBufferAttribute(new Float32Array(scale), 3).setDynamic(true);
+    geometry.addAttribute('translation', translationAttribute);
+    geometry.addAttribute('rotation', rotationAttribute);
+    geometry.addAttribute('scale', scaleAttribute);
 
     // create a material
     var vertexShader = document.getElementById('vertexShader').textContent;
@@ -138,7 +143,7 @@ function SetupTracksMatrix(geo, materials) {
 }
 
 function CoasterUpdate(added, removed) {
-    return;
+ 
     for (var i = 0; i < removed; i++) {
         //scene.remove(trackMeshs[trackMeshs.length - 1]);
         //trackMeshs.pop();
@@ -160,25 +165,31 @@ function CreatesTracks(added, color) {
         trackCount++;
        // trackMeshs.push(CreateTrack((trackMeshs.length) * 20, false));
     }
-    offsetAttribute.needsUpdate = true;
-    orientationAttribute.needsUpdate = true; 
+    translationAttribute.needsUpdate = true;
+    rotationAttribute.needsUpdate = true; 
 }
 function CreateTrack(trackCount, trackIndex) {
-    //X, Y, Z
-    offsetAttribute.array[trackCount * 3] = -Blazor.platform.readFloatField(dataReference, trackIndex) * .036 + 18.5;
-    offsetAttribute.array[trackCount * 3 + 1] = Blazor.platform.readFloatField(dataReference, trackIndex + 8) * .036;
-    offsetAttribute.array[trackCount * 3 + 2] = Blazor.platform.readFloatField(dataReference, trackIndex + 4) * .036 + 8.55;
+    //translationAttribute
+    translationAttribute.array[trackCount * 3] = -Blazor.platform.readFloatField(dataReference, trackIndex) * .036 + 18.5;
+    translationAttribute.array[trackCount * 3 + 1] = Blazor.platform.readFloatField(dataReference, trackIndex + 8) * .036;
+    translationAttribute.array[trackCount * 3 + 2] = Blazor.platform.readFloatField(dataReference, trackIndex + 4) * .036 + 8.55;
 
-   //SIZE
+   ////rotationAttribute
+    var e = new THREE.Euler();
 
-   //YAW
+    e.order = 'ZYX';
+    e.x = THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 16));;
+    e.y = THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 12) + 90);
+    e.z = 0;
 
-   //PITCH
+    var quaternion = new THREE.Quaternion();
+    quaternion.setFromEuler(e, false);
 
-   //RESOUCES
-
-
-
+    rotationAttribute.array[trackCount * 4] = quaternion.x
+    rotationAttribute.array[trackCount * 4 + 1] = quaternion.y;
+    rotationAttribute.array[trackCount * 4 + 2] = quaternion.z;
+    rotationAttribute.array[trackCount * 4 + 3] = quaternion.w;
+  //  rotation
     //orientationAttribute.array[trackCount * 4 + 3] = Math.random() * 2 - 1;
 
     //var vector = new THREE.Vector4();
