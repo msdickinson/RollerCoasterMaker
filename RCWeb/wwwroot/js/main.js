@@ -116,16 +116,21 @@ function SetupTracksMatrix(geo, materials) {
 
     // create a material
     var vertexShader = document.getElementById('vertexShader').textContent;
-    var fragmentShader = document.getElementById('fragmentTextureShader').textContent;
+    var fragmentShader = document.getElementById('fragmentShader').textContent;
+    var vertexTextureShader = document.getElementById('vertexTextureShader').textContent;
+    var fragmentTextureShader = document.getElementById('fragmentTextureShader').textContent;
 
     var material = new THREE.RawShaderMaterial({
-        uniforms: {
-            map: { value: new THREE.TextureLoader().load('./assets/textures/wood.png') }
-        },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,
     });
-
+    var materialTexture = new THREE.RawShaderMaterial({
+        uniforms: {
+            map: { value: new THREE.TextureLoader().load('./assets/textures/wood.png') }
+        },
+        vertexShader: vertexTextureShader,
+        fragmentShader: fragmentTextureShader,
+    });
     mesh = new THREE.Mesh(geometry, material );
 
     scene.add(mesh);

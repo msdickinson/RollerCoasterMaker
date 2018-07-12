@@ -38,6 +38,46 @@
         attribute vec3 translation;
         attribute vec4 rotation;
         attribute vec3 scale;
+
+        // transforms the 'blueprint' geometry with instance attributes
+        vec3 transform( inout vec3 position, vec3 T, vec4 R, vec3 S ) {
+        //applies the scale
+        position *= S;
+        //computes the rotation where R is a (vec4) quaternion
+        position += 2.0 * cross( R.xyz, cross( R.xyz, position ) + R.w * position );
+        //translates the transformed 'blueprint'
+        position += T;
+        //return the transformed position
+        return position;
+        }
+
+        //re-use position for shading
+        varying vec3 vPos;
+        void main() {
+
+        //collects the 'blueprint' coordinates
+        vec3 pos = position;
+        //transform it
+        transform( pos, translation, rotation, scale );
+        //project to get the fragment position
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+        //just to render something :)
+        vPos = pos;
+        }
+    </script>
+    <script id="vertexTextureShader" type="x-shader/x-vertex">
+        precision highp float;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        uniform mat3 normalMatrix;
+
+        //'blueprint' attribute
+        attribute vec3 position;
+
+        //instance attributes
+        attribute vec3 translation;
+        attribute vec4 rotation;
+        attribute vec3 scale;
         attribute vec2 uv;
 
         varying vec2 vUv;
@@ -75,12 +115,8 @@
         precision highp float;
         varying vec3 vPos;
         void main() {
+        //        gl_FragColor = vec4(1.0,0.0,1.0,1.0);
         gl_FragColor = vec4( normalize( vPos ), 1. );
-        }
-    </script>
-    <script id="fragmentShaderTwo" type="x-shader/x-fragment">
-        void main()	{
-        gl_FragColor = vec4(1.0,0.0,1.0,1.0);
         }
     </script>
     <script id="fragmentTextureShader" type="x-shader/x-fragment">
@@ -88,7 +124,7 @@
         uniform sampler2D map;
         varying vec2 vUv;
         void main() {
-            gl_FragColor = texture2D( map, vUv );
+        gl_FragColor = texture2D( map, vUv );
         }
     </script>
 
