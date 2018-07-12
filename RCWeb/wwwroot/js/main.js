@@ -4,7 +4,7 @@ var stats;
 var trackCount;
 var objectCount, instanceCount = 100, tracksMatrix, mcol0, mcol1, mcol2, mcol3, tracksMatrixMax = 1000, matrix, me, bgeo;
 var mcol0, mcol1, mcol2, mcol3;
-var bufferGeometry, geometry, offsets = [], orientations = [];
+var bufferGeometry, geometry, offsets = [], orientations = [], euler;
 var kOffSets, offsetAttribute, orientationAttribute;
 init();
 animate();
@@ -19,7 +19,7 @@ function init() {
     /* Camera */
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 500000);
     camera.position.z = 2;
-    camera.position.set(0, 3.5, 5);
+    camera.position.set(0, 3.5/2, 5/2);
     camera.lookAt(scene.position);
 
     /* Lights */
@@ -76,49 +76,64 @@ function init() {
     document.body.appendChild(stats.dom);
 }
 
-function SetupTracksMatrix(geo) {
-
-    var instances = 250;
-    // geometry
+function SetupTracksMatrix(geo, materials) {
+    var count = 2;
+   // geo.sortFacesByMaterialIndex();
     bufferGeometry = new THREE.BufferGeometry().fromGeometry(geo);
+
+
     geometry = new THREE.InstancedBufferGeometry();
 
     geometry.index = bufferGeometry.index;
     geometry.attributes.position = bufferGeometry.attributes.position;
     geometry.attributes.uv = bufferGeometry.attributes.uv;
 
-    offsets = [];
-    orientations = [];
+    scale = [];
+    translation = [];
+    rotation = [];
+    euler = []
+    var euler = new THREE.Euler();
+    for (var i = 0; i < count; i++) {
+        translation.push(0, 0, 0);
+        scale.push(1, 1, 1);
+        var e = new THREE.Euler();
 
-    for (var i = 0; i < instances; i++) {
-        offsets.push(0, 0, 0);
-        orientations.push(0, 0, 0, 0);
+        e.order = 'ZYX';
+        e.x = THREE.Math.degToRad(0); // Pitch
+        e.y = THREE.Math.degToRad(i * 90 + 90); // Yaw
+        e.z = 0;
+
+        var quaternion = new THREE.Quaternion();
+        quaternion.setFromEuler(e, false);
+
+        rotation.push(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
     }
 
-    offsetAttribute = new THREE.InstancedBufferAttribute(new Float32Array(offsets), 3).setDynamic(true);
-    orientationAttribute = new THREE.InstancedBufferAttribute(new Float32Array(orientations), 4).setDynamic(true);
-    geometry.addAttribute('offset', offsetAttribute);
-    geometry.addAttribute('orientation', orientationAttribute);
+    //create the InstancedBufferAttributes from our float buffers
+    geometry.addAttribute('translation', new THREE.InstancedBufferAttribute(new Float32Array(translation), 3));
+    geometry.addAttribute('rotation', new THREE.InstancedBufferAttribute(new Float32Array(rotation), 4));
+    geometry.addAttribute('scale', new THREE.InstancedBufferAttribute(new Float32Array(scale), 3));
 
+    // create a material
+    var vertexShader = document.getElementById('vertexShader').textContent;
+    var fragmentShader = document.getElementById('fragmentTextureShader').textContent;
 
-
-
-    // material
-    var vert = document.getElementById('vertexShader').textContent;
-    var frag = document.getElementById('fragInstanced').textContent;
     var material = new THREE.RawShaderMaterial({
-        vertexShader: vert,
-        fragmentShader: frag,
+        uniforms: {
+            map: { value: new THREE.TextureLoader().load('./assets/textures/wood.png') }
+        },
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
     });
 
-    mesh = new THREE.Mesh(geometry, material);
+    mesh = new THREE.Mesh(geometry, material );
 
     scene.add(mesh);
     animate();
 }
 
 function CoasterUpdate(added, removed) {
-
+    return;
     for (var i = 0; i < removed; i++) {
         //scene.remove(trackMeshs[trackMeshs.length - 1]);
         //trackMeshs.pop();
@@ -128,6 +143,7 @@ function CoasterUpdate(added, removed) {
 
 }
 function CreatesTracks(added, color) {
+
     for (var i = 0; i < added; i++) {
 
         console.log("X : " + Blazor.platform.readFloatField(dataReference, (trackMeshs.length) * 20));
