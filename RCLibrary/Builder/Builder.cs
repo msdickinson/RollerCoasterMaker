@@ -163,7 +163,8 @@ namespace RCLibrary
             float x = 0;
             float y = 0;
             float z = 0;
-
+            Track lastTrack = new Track();
+            Track TwoTracksBack = new Track();
             //Determine Starting Position
             if (coaster.TrackCountBuild == 0 && coaster.NewTrackCount == 0)
             {
@@ -172,68 +173,78 @@ namespace RCLibrary
                 x = Globals.START_X;
                 y = Globals.START_Y;
                 z = Globals.START_Z;
+
             }
             else
             {
-                Track track;
+                
                 if (coaster.NewTrackCount > 0)
                 {
-                    track = coaster.NewTracks[coaster.NewTrackCount - 1];
+                    lastTrack = coaster.NewTracks[coaster.NewTrackCount - 1];
                 }
                 else
                 {
-                    track = coaster.Tracks[coaster.TrackCountBuild - 1];
+                    lastTrack = coaster.Tracks[coaster.TrackCountBuild - 1];
                 }
-                yaw = track.Yaw;
-                pitch = track.Pitch;
-                x = track.X;
-                y = track.Y;
-                z = track.Z;
+
+                yaw = lastTrack.Yaw;
+                pitch = lastTrack.Pitch;
+                x = lastTrack.X;
+                y = lastTrack.Y;
+                z = lastTrack.Z;
+
+                //Determine Yaw And Pitch
+                switch (action.TrackType)
+                {
+                    case TrackType.Stright:
+                        break;
+                    case TrackType.Left:
+                        yaw = yaw + Globals.STANDARD_ANGLE_CHANGE;
+                        break;
+                    case TrackType.Right:
+                        yaw = yaw - Globals.STANDARD_ANGLE_CHANGE;
+                        break;
+                    case TrackType.Up:
+                        pitch = pitch + Globals.STANDARD_ANGLE_CHANGE;
+                        break;
+                    case TrackType.Down:
+                        pitch = pitch - Globals.STANDARD_ANGLE_CHANGE;
+                        break;
+                    case TrackType.Custom:
+                        yaw = yaw + action.YawOffset;
+                        pitch = pitch + action.PitchOffset;
+                        break;
+                }
+
+                //IF X out of 360
+                if(yaw < 0)
+                    yaw += 360;
+
+                if (yaw >= 360)
+                    yaw += -360;
+
+                if (pitch < 0)
+                    pitch += 360;
+
+                if (pitch >= 360)
+                    pitch += -360;
+
+                //IF Y out of 360
+
+
+                //Determine X, Y, And Z
+                x = lastTrack.X + 
+                    (float)(Math.Cos(MathHelper.ToRadians(lastTrack.Yaw)) * Math.Cos(MathHelper.ToRadians(lastTrack.Pitch)) * Globals.HALF_TRACK_LENGTH) +
+                    (float)(Math.Cos(MathHelper.ToRadians(yaw)) * Math.Cos(MathHelper.ToRadians(pitch)) * Globals.HALF_TRACK_LENGTH) ;
+                y = lastTrack.Y + 
+                    (float)(Math.Sin(MathHelper.ToRadians(lastTrack.Yaw)) * Math.Cos(MathHelper.ToRadians(lastTrack.Pitch)) * Globals.HALF_TRACK_LENGTH) +
+                    (float)(Math.Sin(MathHelper.ToRadians(yaw)) * Math.Cos(MathHelper.ToRadians(pitch)) * Globals.HALF_TRACK_LENGTH);
+                z = lastTrack.Z + 
+                    (float)(Math.Sin(MathHelper.ToRadians(lastTrack.Pitch)) * Globals.HALF_TRACK_LENGTH) + 
+                    (float)(Math.Sin(MathHelper.ToRadians(pitch)) * Globals.HALF_TRACK_LENGTH);
+
             }
 
-            //Determine Yaw And Pitch
-            switch (action.TrackType)
-            {
-                case TrackType.Stright:
-                    break;
-                case TrackType.Left:
-                    yaw = yaw + Globals.STANDARD_ANGLE_CHANGE;
-                    break;
-                case TrackType.Right:
-                    yaw = yaw - Globals.STANDARD_ANGLE_CHANGE;
-                    break;
-                case TrackType.Up:
-                    pitch = pitch + Globals.STANDARD_ANGLE_CHANGE;
-                    break;
-                case TrackType.Down:
-                    pitch = pitch - Globals.STANDARD_ANGLE_CHANGE;
-                    break;
-                case TrackType.Custom:
-                    yaw = yaw + action.YawOffset;
-                    pitch = pitch + action.PitchOffset;
-                    break;
-            }
-
-            //IF X out of 360
-            if(yaw < 0)
-                yaw += 360;
-
-            if (yaw >= 360)
-                yaw += -360;
-
-            if (pitch < 0)
-                pitch += 360;
-
-            if (pitch >= 360)
-                pitch += -360;
-
-            //IF Y out of 360
-
-
-            //Determine X, Y, And Z
-            x = x + (float)(Math.Cos(MathHelper.ToRadians(yaw)) * Math.Cos(MathHelper.ToRadians(pitch)) * Globals.TRACK_LENGTH);
-            y = y + (float)(Math.Sin(MathHelper.ToRadians(yaw)) * Math.Cos(MathHelper.ToRadians(pitch)) * Globals.TRACK_LENGTH);
-            z = z + (float)(Math.Sin(MathHelper.ToRadians(pitch)) * Globals.TRACK_LENGTH);
 
             //Check Rules
             TaskResults result = CheckRules(coaster, x, y, z, yaw, pitch, action.TrackType);

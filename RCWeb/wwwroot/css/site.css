@@ -1,21 +1,31 @@
-﻿body {
+﻿@import url(https://fonts.googleapis.com/css?family=Lato:100,300,400,700);
+
+body {
     overflow: hidden;
     margin: 0;
     padding: 0;
+    font-family: 'Lato', sans-serif;
     background-color: rgb(41, 41, 41);
 }
+canvas {
+    width: 100%;
+    height: 100%
+}
+
 console {
     background-color: rgb(0, 191, 255);
-   
 }
 
 p {
     margin: 0;
     padding: 0;
 }
-
+#stats {
+    position: fixed;
+    top: 0;
+    right: 0;
+}  
 .left,
-
 .right {
     position: absolute;
     color: #fff;
@@ -49,6 +59,7 @@ a {
     width: 50px;
     margin: 10px auto;
 }
+
 .flex-container {
     display: flex;
     flex-wrap: nowrap;
@@ -61,7 +72,18 @@ a {
     bottom: 0px;
     left: 0px;
 }
-
+.flex-container-two {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-top: 0px solid Black;
+    height: 75px;
+    width: 100%;
+    position: fixed;
+    bottom: 75px;
+    left: 0px;
+}
 .rc-button:active {
     opacity: 0.5;
 }
@@ -71,5 +93,127 @@ a {
     background: transparent;
     width: 64px;
     height: 64px;
+    min-height: 32px;
+    min-width: 32px;
     margin: 2px;
+    max-width: 100%;
+    height: auto;
+    display:block
+}
+
+.rc_btn_disabled {
+    opacity: 0.5;
+}
+
+.loading {
+    position: absolute;
+    margin: auto;
+    background-position: center center;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: url('../assets/images/splashscreenimage.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.loading-back-drop {
+    position: absolute;
+    margin: auto;
+    background-position: center center;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgb(41, 41, 41);
+}
+
+.preloader-wrap {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    background: rgb(41, 41, 41);
+    z-index: 2;
+}
+
+
+.loader,
+.percentage {
+    height: 30px;
+    max-width: 300px;
+    border: 2px solid #a3a3a3;
+    border-radius: 20px;
+    font-weight: 300;
+    position: absolute;
+    top: 62%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+    .loader:after,
+    .percentage:after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+.trackbar {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    color: #fff;
+    text-align: center;
+    line-height: 30px;
+    overflow: hidden;
+    position: relative;
+    opacity: 0.99;
+}
+
+.loadbar {
+    width: 0%;
+    height: 100%;
+    background: repeating-linear-gradient( 45deg, #efefef, #efefef 10px, #dddddd 10px, #dddddd 20px ); /* Stripes Background Gradient */
+    box-shadow: 0px 0px 14px 1px #969696;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: flicker 5s infinite;
+    overflow: hidden;
+}
+
+.glow {
+    width: 0%;
+    height: 0%;
+    border-radius: 20px;
+    box-shadow: 0px 0px 60px 10px #878787;
+    position: absolute;
+    bottom: -5px;
+    animation: animation 5s infinite;
+}
+
+@keyframes animation {
+    10% {
+        opacity: 0.9;
+    }
+
+    30% {
+        opacity: 0.86;
+    }
+
+    60% {
+        opacity: 0.8;
+    }
+
+    80% {
+        opacity: 0.75;
+    }
 }

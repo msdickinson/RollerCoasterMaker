@@ -21,7 +21,7 @@ namespace RCLibrary
 
         //Start Build Area (Note: Build area only allows postive values. so size 100. means 0-100)
         public const float BUILD_AREA_SIZE_X = 1000;
-        public const float BUILD_AREA_SIZE_Y = 1025;
+        public const float BUILD_AREA_SIZE_Y = 1000;
 
         public const float FINSH_AREA_X = 260;
         public const float FINSH_AREA_Y = 5;
@@ -38,9 +38,12 @@ namespace RCLibrary
         public const int X_Regions = 300;
         public const int Y_Regions = 300;
         public const int Z_Regions = 100;
+
         //Track
+        public const int MAX_TRACKS = 5000;
         public const float TRACK_LENGTH_2X = (float)7.7;
         public const float TRACK_LENGTH = (float)7.7;
+        public const float HALF_TRACK_LENGTH = (float)7.7/2;
         public const float TRACK_HIGHT = (float)1.2;
         public const float TRACK_WIDTH = (float)3;
 

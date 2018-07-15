@@ -1,50 +1,112 @@
 ﻿@page "/"
 <div class="console"> <p style="color:whitesmoke">Tracks: @game.coaster.TrackCount</p></div>
 <div class="flex-container">
-    <img onclick="@BuildLeft" src="/assets/images/left64.png" class="rc_btn" />
-    <img onclick="@BuildStright" src="/assets/images/stright64.png" class="rc_btn" />
-    <img onclick="@BuildRight" src="/assets/images/right64.png" class="rc_btn" />
-    <img onclick="@BuildUp" src="/assets/images/up64.png" class="rc_btn" />
-    <img onclick="@BuildDown" src="/assets/images/down64.png" class="rc_btn" />
-    <img onclick="@Back" src="/assets/images/back64.png" class="rc_btn" />
+    @if(UISection == "Build")
+    {
+        <img onclick="@BuildLeft" src="/assets/images/left64.png" class="rc_btn" />
+        <img onclick="@BuildStright" src="/assets/images/stright64.png" class="rc_btn" />
+        <img onclick="@BuildRight" src="/assets/images/right64.png" class="rc_btn" />
+        <img onclick="@BuildUp" src="/assets/images/up64.png" class="rc_btn" />
+        <img onclick="@BuildDown" src="/assets/images/down64.png" class="rc_btn" />
+        <img onclick="@Back" src="/assets/images/back64.png" class="rc_btn" />
+    }
+    else if(UISection == "Custom")
+    {
+        <img onclick="@BuildLoop" src="/assets/images/loop64.png" class="rc_btn" />
+        <img src="/assets/images/upward64.png" class="rc_btn rc_btn_disabled" />
+        <img src="/assets/images/downward64.png" class="rc_btn rc_btn_disabled" />
+        <img src="/assets/images/flaten64.png" class="rc_btn rc_btn_disabled" />
+    }
+    else if(UISection == "Camera")
+    {
+        <img src="/assets/images/cameraAuto64.png" class="rc_btn rc_btn_disabled" />
+        <img src="/assets/images/cameraLastTrack64.png" class="rc_btn rc_btn_disabled" />
+        <img src="/assets/images/camera64.png" class="rc_btn rc_btn_disabled" />
+    }
 </div>
-
+<div class="flex-container-two">
+    <img onclick="@(() => UISection = "Build")" src="/assets/images/right64.png" class="rc_btn" />
+    <img onclick="@(() => UISection = "Custom")" src="/assets/images/railway_tracks_128.png" class="rc_btn" />
+    <img onclick="@(() => UISection = "Camera")" src="/assets/images/camera64.png" class="rc_btn" />
+    <img src="/assets/images/finish64.png" class="rc_btn rc_btn_disabled" />
+</div>
 @functions {
-RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
+    RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
+    string loaded = "";
+    string UISection = "Build";
+    bool firstRender = true;
+    //protected override Task OnAfterRenderAsync()
+    //{
+    //    // protected override void OnAfterRender()
+    //    var t = Task.Run(async () => {
+    //        await Task.Delay(8000);
+    //        ContentPackage.CoasterUpdate(game.coaster.GetLastCoasterUpdate());
+    //        ContentPackage.Loaded(loaded);
+    //    });
+    //    return t;
+    //}
 
-void Reset()
-{
-    game.Reset();
-}
-void BuildStright()
-{
+    protected override void OnAfterRender()
+    {
+        if(firstRender == true)
+        {
+            ContentPackage.CoasterData(game.coaster.Data);
+            ContentPackage.CoasterUpdate(game.coaster.LastNewTracks, game.coaster.LastRemovedTracks);
+            ContentPackage.Loaded(loaded);
+            firstRender = false;
+        }
+    }
 
-    game.BuildStright();
+    void Reset()
+    {
+        game.Reset();
+        SendCoaster();
+    }
+    void BuildStright()
+    {
+        game.BuildStright();
+        SendCoaster();
+    }
+    void BuildLeft()
+    {
+        game.BuildLeft();
+        SendCoaster();
+    }
+    void BuildRight()
+    {
+        game.BuildRight();
+        SendCoaster();
+    }
+    void BuildUp()
+    {
+        game.BuildUp();
+        SendCoaster();
+    }
+    void BuildDown()
+    {
+        game.BuildDown();
+        SendCoaster();
+    }
+    void Back()
+    {
+        game.Back();
+        SendCoaster();
+    }
+    void BuildLoop()
+    {
+        game.BuildLoop();
+        SendCoaster();
+    }
 
-}
-void BuildLeft()
-{
-    game.BuildLeft();
-}
-void BuildRight()
-{
-    game.BuildRight();
-}
-void BuildUp()
-{
-    game.BuildUp();
-}
-void BuildDown()
-{
-    game.BuildDown();
-}
-void Back()
-{
-    game.Back();
-}
-void Log()
-{
-    game.Log();
-}
-
+    void Log()
+    {
+        game.Log();
+    }
+    void SendCoaster()
+    {
+        if(game.coaster.LastBuildSucessful)
+        {
+            ContentPackage.CoasterUpdate(game.coaster.LastNewTracks, game.coaster.LastRemovedTracks);
+        }
+    }
 }

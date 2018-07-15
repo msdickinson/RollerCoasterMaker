@@ -2,19 +2,242 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>RCWeb</title>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no; target-densityDpi=device-dpi" />
+    <title>Roller Coaster Maker</title>
     <link href="css/site.css" rel="stylesheet" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <link rel="shortcut icon" href="/assets/images/favicon.png">
+    <link rel="preload" as="image" href="/assets/images/splashscreenimage.png" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--<link rel="prefetch" as="script" href="/_framework/wasm/_framework/wasm/mono.js" />-->
+    <link rel="prefetch" as="script" href="/_framework/wasm/mono.wasm" />
+    <!--<link rel="prefetch" as="script" href="/_framework/_bin/_framework/_bin/Microsoft.Extensions.DependencyInjection.dll" />-->
+    <link rel="prefetch" as="script" href="/_framework/_bin/mscorlib.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/System.Core.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/RCLibrary.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/RCWeb.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/netstandard.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.Browser.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/System.Net.Http.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/Microsoft.AspNetCore.Blazor.dll" />
+    <link rel="prefetch" as="script" href="/_framework/_bin/System.dll" />
+    <link rel="prefetch" as="script" href="/assets/layout.json" />
 </head>
 <body>
+    <script id="vertexShader" type="x-shader/x-vertex">
+        precision highp float;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        uniform mat3 normalMatrix;
 
-    <app>    <div class="divtest"></div>  </app>
-    <script src="css/bootstrap/bootstrap-native.min.js"></script>
+        //'blueprint' attribute
+        attribute vec3 position;
+
+        //instance attributes
+        attribute vec3 translation;
+        attribute vec4 rotation;
+        attribute vec3 scale;
+
+        // transforms the 'blueprint' geometry with instance attributes
+        vec3 transform( inout vec3 position, vec3 T, vec4 R, vec3 S ) {
+        //applies the scale
+        position *= S;
+        //computes the rotation where R is a (vec4) quaternion
+        position += 2.0 * cross( R.xyz, cross( R.xyz, position ) + R.w * position );
+        //translates the transformed 'blueprint'
+        position += T;
+        //return the transformed position
+        return position;
+        }
+
+        //re-use position for shading
+        varying vec3 vPos;
+        void main() {
+
+        //collects the 'blueprint' coordinates
+        vec3 pos = position;
+        //transform it
+        transform( pos, translation, rotation, scale );
+        //project to get the fragment position
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+        //just to render something :)
+        vPos = pos;
+        }
+    </script>
+    <script id="vertexTextureShader" type="x-shader/x-vertex">
+        precision highp float;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        uniform mat3 normalMatrix;
+
+        //'blueprint' attribute
+        attribute vec3 position;
+
+        //instance attributes
+        attribute vec3 translation;
+        attribute vec4 rotation;
+        attribute vec3 scale;
+        attribute vec2 uv;
+
+        varying vec2 vUv;
+
+        // transforms the 'blueprint' geometry with instance attributes
+        vec3 transform( inout vec3 position, vec3 T, vec4 R, vec3 S ) {
+        //applies the scale
+        position *= S;
+        //computes the rotation where R is a (vec4) quaternion
+        position += 2.0 * cross( R.xyz, cross( R.xyz, position ) + R.w * position );
+        //translates the transformed 'blueprint'
+        position += T;
+        //return the transformed position
+        return position;
+        }
+
+        //re-use position for shading
+        varying vec3 vPos;
+        void main() {
+
+        //collects the 'blueprint' coordinates
+        vec3 pos = position;
+        //transform it
+        transform( pos, translation, rotation, scale );
+        //project to get the fragment position
+
+        vUv = uv;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+        //just to render something :)
+        vPos = pos;
+        }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        // precision highp float;
+        //varying vec3 vPos;
+        void main() {
+        gl_FragColor = vec4(0,0,0,0);
+        //gl_FragColor = vec4( normalize( vPos ), 1. );
+        }
+    </script>
+    <script id="fragmentTextureShader" type="x-shader/x-fragment">
+        precision highp float;
+        uniform sampler2D map;
+        varying vec2 vUv;
+        void main() {
+        gl_FragColor = texture2D( map, vUv );
+        }
+    </script>
+
+
+    <app>
+    </app>
+    <div class="preloader-wrap">
+        <div class="loading"></div>
+        <div class="percentage" id="precent"></div>
+        <div class="loader">
+
+            <div class="trackbar">
+                <div class="loadbar"></div>
+            </div>
+            <div class="glow"></div>
+        </div>
+    </div>
+    <div class="console"> <p id="TracksRendering" style="color:whitesmoke"></div>
     <script type="blazor-boot">
     </script>
+
+    <script src="js/stats.min.js"></script>
     <script src="js/three.min.js"></script>
     <script src="js/threex.windowresize.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        let BlazorPageLoaded = false;
+        $(document).ready(function () {
+            var width = 50,
+                perfData = window.performance.timing, // The PerformanceTiming interface represents timing-related performance information for the given page.
+                EstimatedTime = -(perfData.loadEventEnd - perfData.navigationStart),
+                time = parseInt((EstimatedTime / 1000) % 60) * 100;
+
+            // Loadbar Animation
+            $(".loadbar").animate({
+                width: width + "%"
+            }, time);
+
+            // Loadbar Glow Animation
+            $(".glow").animate({
+                width: width + "%"
+            }, time);
+
+
+            // Percentage Increment Animation
+            var PercentageID = $("#precent"),
+                start = 0,
+                end = 100,
+                durataion = time;
+            animateValue(PercentageID, start, end, durataion);
+
+            function animateValue(id, start, end, duration) {
+
+                var range = end - start,
+                    current = start,
+                    increment = end > start ? 1 : -1,
+                    stepTime = Math.abs(Math.floor(duration / range));
+                // obj = $(id);
+
+                var timer = setInterval(function () {
+                    if (BlazorPageLoaded) {
+                        clearInterval(timer);
+                    }
+                    current += increment;
+                    // $(obj).text(current + "%");
+                    //obj.innerHTML = current;
+                    if (current == end) {
+                        clearInterval(timer);
+                        //        document.getElementById("loadingText").textContent = "Loading Game";
+                        $(".loadbar").stop();
+                        $(".loadbar").animate({
+                            width: 90 + "%"
+                        }, 5000);
+                    }
+                }, stepTime);
+            }
+
+
+
+        });
+    </script>
+    <script>
+        let dataReference = null;
+        Blazor.registerFunction('ContentPackage.Loaded', function (data) {
+            BlazorPageLoaded = true;
+            let finalLoadTime = 200;
+
+            //  document.getElementById("loadingText").textContent = "Done";
+            $(".loadbar").stop();
+            $(".loadbar").animate({
+                width: 100 + "%"
+            }, finalLoadTime);
+            setTimeout(function () {
+                $('.preloader-wrap').fadeOut(300);
+            }, finalLoadTime);
+        });
+
+        Blazor.registerFunction('ContentPackage.CoasterData', function (pointerToData) {
+            dataReference = Blazor.platform.getArrayEntryPtr(pointerToData, 0, 4);
+            console.log(dataReference);
+        });
+        Blazor.registerFunction('ContentPackage.Update', function (added, removed) {
+            console.log(added)
+            console.log(removed)
+            CoasterUpdate(added, removed);
+        });
+    </script>
+    <link rel="preload" as="image" href="/assets/images/stright64.png" />
+    <link rel="preload" as="image" href="/assets/images/left64.png" />
+    <link rel="preload" as="image" href="/assets/images/right64.png" />
+    <link rel="preload" as="image" href="/assets/images/up64.png" />
+    <link rel="preload" as="image" href="/assets/images/down64.png" />
+    <link rel="preload" as="image" href="/assets/images/back64.png" />
 </body>
 </html>
