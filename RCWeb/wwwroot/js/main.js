@@ -262,12 +262,12 @@ function CreateTrack(trackCount, trackIndex) {
 
     e.order = 'ZYX';
     e.x = THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 16));
-    e.y = THREE.Math.degToRad((Blazor.platform.readFloatField(dataReference, trackIndex + 12) + 90) * Math.PI / 180);
+    e.y = THREE.Math.degToRad((Blazor.platform.readFloatField(dataReference, trackIndex + 12) + 90) );
     e.z = 0;
 
     var quaternion = new THREE.Quaternion();
-    quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 12) + 90));
-    //quaternion.setFromEuler(e, false);
+//
+    quaternion.setFromEuler(e, false);
 
     rotationAttribute.array[trackCount * 4] = quaternion.x
     rotationAttribute.array[trackCount * 4 + 1] = quaternion.y;
