@@ -112,11 +112,11 @@
         }
     </script>
     <script id="fragmentShader" type="x-shader/x-fragment">
-        precision highp float;
-        varying vec3 vPos;
+        // precision highp float;
+        //varying vec3 vPos;
         void main() {
-        //        gl_FragColor = vec4(1.0,0.0,1.0,1.0);
-        gl_FragColor = vec4( normalize( vPos ), 1. );
+        gl_FragColor = vec4(0,0,0,0);
+        //gl_FragColor = vec4( normalize( vPos ), 1. );
         }
     </script>
     <script id="fragmentTextureShader" type="x-shader/x-fragment">
@@ -142,6 +142,7 @@
             <div class="glow"></div>
         </div>
     </div>
+    <div class="console"> <p id="TracksRendering" style="color:whitesmoke"></div>
     <script type="blazor-boot">
     </script>
 
