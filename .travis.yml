@@ -1,7 +1,0 @@
-language: csharp
-dotnet: 2.0.0
-install:
-   - dotnet restore
-script:
-  - msbuild /p:Configuration=Release RollerCoasterMaker.sln
-  - dotnet test RC.Tests/RC.Tests.csproj
