@@ -25,6 +25,7 @@
     <link rel="prefetch" as="script" href="/assets/layout.json" />
 </head>
 <body>
+    <script src="js/Tween.js"></script>
     <script id="vertexShader" type="x-shader/x-vertex">
         precision highp float;
         uniform mat4 modelViewMatrix;
@@ -230,7 +231,7 @@
         Blazor.registerFunction('ContentPackage.Update', function (added, removed) {
             console.log(added)
             console.log(removed)
-            CoasterUpdate(added, removed);
+            updateCoaster(added, removed);
         });
     </script>
     <link rel="preload" as="image" href="/assets/images/stright64.png" />
