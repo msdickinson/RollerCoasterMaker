@@ -1,5 +1,5 @@
 let stats;
-let controls, controlsOne, controlsTwo camera, scene, renderer, light, loader;
+let controls, controlsOne, controlsTwo, camera, scene, renderer, light, loader;
 let layoutGeometry, layoutMaterials, layoutMesh;
 let trackWoodGeometry, trackWoodBufferGeometry, trackWoodInstancedBufferGeometry, trackWoodMesh;
 let trackSupportGeometry, trackSupportBufferGeometry, trackSupportInstancedBufferGeometry, trackSupportMesh;
@@ -10,12 +10,12 @@ let cameraType = "Auto", activeRender = null, lookAtPostion = null;
 let trackCount = 0;
 let totalAnimates = 0, times = [], fps;
 let trackObjects = [];
-const MAX_TRACKS = 25000,
-    TRACK_GEOMETRY_SCALE = .19,
-    TRACK_POSTION_SCALE = .036,
-    TRACK_X_OFFSET = 18.5,
-    TRACK_Y_OFFSET = 0;
-    TRACK_Z_OFFSET = -12;
+const MAX_TRACKS = 25000;
+const TRACK_GEOMETRY_SCALE = .19;
+const TRACK_POSTION_SCALE = .036;
+const TRACK_X_OFFSET = 18.5;
+const TRACK_Y_OFFSET = 0;
+const TRACK_Z_OFFSET = -12;
 
 init();
 function init() {
@@ -42,24 +42,6 @@ function initCamera() {
     camera.position.z = 2;
     camera.position.set(0, 3.5 / 2, 5 / 2);
     camera.lookAt(scene.position);
-
-    controlsOne = new THREE.OrbitControls(camera, renderer.domElement);
-    controlsOne.enableDamping = true;
-    controlsOne.dampingFactor = .15;
-    controlsOne.rotateSpeed = 0.25;
-    controlsOne.enableZoom = true;
-    controlsOne.maxPolarAngle = Math.PI / 2.1;
-    controlsOne.minPolarAngle = 0;
-
-    controlsTwo = new THREE.OrbitControls(camera, rendererTwo.domElement);
-    controlsTwo.enableDamping = true;
-    controlsTwo.dampingFactor = .15;
-    controlsTwo.rotateSpeed = 0.25;
-    controlsTwo.enableZoom = true;
-    controlsTwo.maxPolarAngle = Math.PI / 2.1;
-    controlsTwo.minPolarAngle = 0;
-
-    controls = controlsOne;
 }
 function initLights() {
     light = new THREE.DirectionalLight(0xdfebff, 2.2);
@@ -84,7 +66,22 @@ function initRenderer() {
     THREEx.WindowResize(rendererTwo, camera)
 }
 function initControls() {
+    controlsOne = new THREE.OrbitControls(camera, renderer.domElement);
+    controlsOne.enableDamping = true;
+    controlsOne.dampingFactor = .15;
+    controlsOne.rotateSpeed = 0.25;
+    controlsOne.enableZoom = true;
+    controlsOne.maxPolarAngle = Math.PI / 2.1;
+    controlsOne.minPolarAngle = 0;
 
+    controlsTwo = new THREE.OrbitControls(camera, rendererTwo.domElement);
+    controlsTwo.enableDamping = true;
+    controlsTwo.dampingFactor = .15;
+    controlsTwo.rotateSpeed = 0.25;
+    controlsTwo.enableZoom = true;
+    controlsTwo.maxPolarAngle = Math.PI / 2.1;
+    controlsTwo.minPolarAngle = 0;
+    controls = controlsOne;
 }
 function initStats() {
     stats = new Stats();
@@ -222,7 +219,6 @@ function setupTracksMatrix() {
         totalAnimates = 0;
     }, 5000);
 }
-
 function updateCoaster(added, removed) {
     for (var i = 0; i < removed; i++) {
         trackCount--;
@@ -231,34 +227,34 @@ function updateCoaster(added, removed) {
     updateCamera();
 }
 function updateCamera(){
-    if (cameraType == "Auto") {
-        //camera.lookAt(
-        //    translationVector[trackCount - 1].x,
-        //    translationVector[trackCount - 1].y,
-        //    translationVector[trackCount - 1].z
-        //        );
-    }
+    //if (cameraType == "Auto") {
+    //    //camera.lookAt(
+    //    //    translationVector[trackCount - 1].x,
+    //    //    translationVector[trackCount - 1].y,
+    //    //    translationVector[trackCount - 1].z
+    //    //        );
+    //}
 }
 
 function createTracks(added, color) {
     for (var i = 0; i < added; i++) {
         createTrack(trackCount, trackCount * 20)
 
-        console.log("");
-        console.log("RC");
-        console.log("X : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20));
-        console.log("Y : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 4));
-        console.log("Z : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 8));
-        console.log("Yaw : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 12));
-        console.log("Pitch : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 16));
+        ////console.log("");
+        ////console.log("RC");
+        ////console.log("X : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20));
+        ////console.log("Y : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 4));
+        ////console.log("Z : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 8));
+        ////console.log("Yaw : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 12));
+        ////console.log("Pitch : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 16));
 
-        console.log("");
-        console.log("WEBGL");
-        console.log("X : " + trackObjects[trackCount].x);
-        console.log("Y : " + trackObjects[trackCount].y);
-        console.log("Z : " + trackObjects[trackCount].z);
-        console.log("Yaw : " + trackObjects[trackCount].yaw);
-        console.log("Pitch : " + trackObjects[trackCount].pitch);
+        ////console.log("");
+        ////console.log("WEBGL");
+        ////console.log("X : " + trackObjects[trackCount].x);
+        ////console.log("Y : " + trackObjects[trackCount].y);
+        ////console.log("Z : " + trackObjects[trackCount].z);
+        ////console.log("Yaw : " + trackObjects[trackCount].yaw);
+        ////console.log("Pitch : " + trackObjects[trackCount].pitch);
 
         trackCount++;
     }
@@ -307,8 +303,8 @@ function animate(time) {
     fps = times.length;
     
     stats.begin();
-    //controls.update();
-    controlsOne.update();
+    controls.update();
+    //controlsOne.update();
    // controlsTwo.update();
 
     trackCulling();
