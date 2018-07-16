@@ -1,5 +1,5 @@
 let stats;
-let controls, camera, scene, renderer, light, loader;
+let controls, controlsOne, controlsTwo camera, scene, renderer, light, loader;
 let layoutGeometry, layoutMaterials, layoutMesh;
 let trackWoodGeometry, trackWoodBufferGeometry, trackWoodInstancedBufferGeometry, trackWoodMesh;
 let trackSupportGeometry, trackSupportBufferGeometry, trackSupportInstancedBufferGeometry, trackSupportMesh;
@@ -42,6 +42,24 @@ function initCamera() {
     camera.position.z = 2;
     camera.position.set(0, 3.5 / 2, 5 / 2);
     camera.lookAt(scene.position);
+
+    controlsOne = new THREE.OrbitControls(camera, renderer.domElement);
+    controlsOne.enableDamping = true;
+    controlsOne.dampingFactor = .15;
+    controlsOne.rotateSpeed = 0.25;
+    controlsOne.enableZoom = true;
+    controlsOne.maxPolarAngle = Math.PI / 2.1;
+    controlsOne.minPolarAngle = 0;
+
+    controlsTwo = new THREE.OrbitControls(camera, rendererTwo.domElement);
+    controlsTwo.enableDamping = true;
+    controlsTwo.dampingFactor = .15;
+    controlsTwo.rotateSpeed = 0.25;
+    controlsTwo.enableZoom = true;
+    controlsTwo.maxPolarAngle = Math.PI / 2.1;
+    controlsTwo.minPolarAngle = 0;
+
+    controls = controlsOne;
 }
 function initLights() {
     light = new THREE.DirectionalLight(0xdfebff, 2.2);
@@ -66,21 +84,7 @@ function initRenderer() {
     THREEx.WindowResize(rendererTwo, camera)
 }
 function initControls() {
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = .15;
-    controls.rotateSpeed = 0.25;
-    controls.enableZoom = true;
-    controls.maxPolarAngle = Math.PI / 2.1;
-    controls.minPolarAngle = 0;
 
-    controls = new THREE.OrbitControls(camera, rendererTwo.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = .15;
-    controls.rotateSpeed = 0.25;
-    controls.enableZoom = true;
-    controls.maxPolarAngle = Math.PI / 2.1;
-    controls.minPolarAngle = 0;
 }
 function initStats() {
     stats = new Stats();
@@ -211,6 +215,7 @@ function setupTracksMatrix() {
     window.setInterval(function () {
         if ((totalAnimates / 5) < 25 && activeRender === renderer) {
             activeRender = rendererTwo;
+            //controls = controlsTwo;
             renderer.domElement.hidden = true;
             clearInterval();
         }
@@ -302,7 +307,9 @@ function animate(time) {
     fps = times.length;
     
     stats.begin();
-    controls.update();
+    //controls.update();
+    controlsOne.update();
+   // controlsTwo.update();
 
     trackCulling();
 
