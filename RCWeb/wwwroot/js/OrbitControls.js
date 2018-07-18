@@ -74,28 +74,48 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	// Mouse buttons
 	this.mouseButtons = { ORBIT: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.RIGHT };
-
+    this.spherical = null;
 	// for reset
 	this.target0 = this.target.clone();
 	this.position0 = this.object.position.clone();
 	this.zoom0 = this.object.zoom;
-
+    this.radius = 1;
 	//
 	// public methods
 	//
 
 	this.getPolarAngle = function () {
 
-		return phi;
+        return spherical.phi;
 
 	};
 
 	this.getAzimuthalAngle = function () {
 
-		return theta;
+        return spherical.theta;
 
 	};
+    this.getRadius = function () {
 
+        return spherical.radius;
+
+    };
+
+    this.setPolarAngle = function (angle) {
+
+        phi = angle;
+        this.forceUpdate();
+
+    };
+
+    this.setAzimuthalAngle = function (angle) {
+        theta = angle;
+        this.forceUpdate();
+
+    };
+    this.setRadius = function (radius) {
+        this.forceUpdate(radius);
+    };
 	this.reset = function () {
 
 		scope.target.copy( scope.target0 );
@@ -110,6 +130,100 @@ THREE.OrbitControls = function ( object, domElement ) {
 		state = STATE.NONE;
 
 	};
+    this.forceUpdate = function () {
+
+
+        var offset = new THREE.Vector3();
+
+        // so camera.up is the orbit axis
+        var quat = new THREE.Quaternion().setFromUnitVectors(object.up, new THREE.Vector3(0, 1, 0));
+        var quatInverse = quat.clone().inverse();
+
+        var lastPosition = new THREE.Vector3();
+        var lastQuaternion = new THREE.Quaternion();
+
+        return function (phiAngle, thetaAngle, radiusValue) {
+
+            phi = phiAngle;
+            theta = thetaAngle;
+            radius = radiusValue;
+
+            var position = this.object.position;
+
+            offset.copy(position).sub(this.target);
+
+            // rotate offset to "y-axis-is-up" space
+            offset.applyQuaternion(quat);
+
+            // restrict theta to be between desired limits
+            theta = Math.max(this.minAzimuthAngle, Math.min(this.maxAzimuthAngle, theta));
+
+            // restrict phi to be between desired limits
+            phi = Math.max(this.minPolarAngle, Math.min(this.maxPolarAngle, phi));
+
+            // restrict phi to be betwee EPS and PI-EPS
+            phi = Math.max(EPS, Math.min(Math.PI - EPS, phi));
+
+            // restrict radius to be between desired limits
+            radius = Math.max(this.minDistance, Math.min(this.maxDistance, radius));
+
+            // move target to panned location
+            this.target.add(panOffset);
+
+            offset.x = radius * Math.sin(phi) * Math.sin(theta);
+            offset.y = radius * Math.cos(phi);
+            offset.z = radius * Math.sin(phi) * Math.cos(theta);
+
+            // rotate offset back to "camera-up-vector-is-up" space
+            offset.applyQuaternion(quatInverse);
+
+            position.copy(this.target).add(offset);
+
+            this.object.lookAt(this.target);
+
+            if (this.enableDamping === true) {
+
+                thetaDelta *= (1 - this.dampingFactor);
+                phiDelta *= (1 - this.dampingFactor);
+
+            } else {
+
+                thetaDelta = 0;
+                phiDelta = 0;
+
+            }
+
+
+        
+            spherical.theta = theta
+            spherical.phi = phi
+
+            spherical.radius = radius;
+
+            scale = 1;
+            panOffset.set(0, 0, 0);
+
+            // update condition is:
+            // min(camera displacement, camera rotation in radians)^2 > EPS
+            // using small-angle approximation cos(x/2) = 1 - x^2 / 8
+
+            if (zoomChanged ||
+                lastPosition.distanceToSquared(this.object.position) > EPS ||
+                8 * (1 - lastQuaternion.dot(this.object.quaternion)) > EPS) {
+
+                lastPosition.copy(this.object.position);
+                lastQuaternion.copy(this.object.quaternion);
+                zoomChanged = false;
+
+                return true;
+
+            }
+
+            return false;
+
+        };
+
+    }();
 
 	// this method is exposed, but perhaps it would be better if we can make it private...
 	this.update = function() {
@@ -183,7 +297,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			scale = 1;
 			panOffset.set( 0, 0, 0 );
-
+            this.spherical = spherical;
 			// update condition is:
 			// min(camera displacement, camera rotation in radians)^2 > EPS
 			// using small-angle approximation cos(x/2) = 1 - x^2 / 8
@@ -197,7 +311,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 				lastPosition.copy( scope.object.position );
 				lastQuaternion.copy( scope.object.quaternion );
 				zoomChanged = false;
-
+                
 				return true;
 
 			}
@@ -243,7 +357,15 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	var state = STATE.NONE;
 
-	var EPS = 0.000001;
+    var EPS = 0.000001;
+
+    // Current position in spherical coordinate system.
+    var theta = 0;
+    var phi = 0;
+
+    // Pending changes
+    var phiDelta = 0;
+    var thetaDelta = 0;
 
 	// current position in spherical coordinates
 	var spherical = new THREE.Spherical();

@@ -10,6 +10,7 @@ let cameraType = "Auto", activeRender = null, lookAtPostion = null;
 let trackCount = 0;
 let totalAnimates = 0, times = [], fps;
 let trackObjects = [];
+let cameraTween = null;
 const MAX_TRACKS = 25000;
 const TRACK_GEOMETRY_SCALE = .19;
 const TRACK_POSTION_SCALE = .036;
@@ -38,7 +39,7 @@ function initScene() {
     scene.background = new THREE.Color(0xf0f0f0);
 }
 function initCamera() {
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 10000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.0001, 10000);
     camera.position.z = 2;
     camera.position.set(0, 3.5 / 2, 5 / 2);
     camera.lookAt(scene.position);
@@ -73,14 +74,16 @@ function initControls() {
     controlsOne.enableZoom = true;
     controlsOne.maxPolarAngle = Math.PI / 2.1;
     controlsOne.minPolarAngle = 0;
+    //controlsOne.minAzimuthAngle = -Infinity; // radians
+    //controlsOne.maxAzimuthAngle = Infinity; // radians
 
-    controlsTwo = new THREE.OrbitControls(camera, rendererTwo.domElement);
-    controlsTwo.enableDamping = true;
-    controlsTwo.dampingFactor = .15;
-    controlsTwo.rotateSpeed = 0.25;
-    controlsTwo.enableZoom = true;
-    controlsTwo.maxPolarAngle = Math.PI / 2.1;
-    controlsTwo.minPolarAngle = 0;
+    //controlsTwo = new THREE.OrbitControls(camera, rendererTwo.domElement);
+    //controlsTwo.enableDamping = true;
+    //controlsTwo.dampingFactor = .15;
+    //controlsTwo.rotateSpeed = 0.25;
+    //controlsTwo.enableZoom = true;
+    //controlsTwo.maxPolarAngle = Math.PI / 2.1;
+    //controlsTwo.minPolarAngle = 0;
     controls = controlsOne;
 }
 function initStats() {
@@ -204,6 +207,9 @@ function setupTracksMatrix() {
 
     trackWoodMesh = new THREE.Mesh(trackWoodInstancedBufferGeometry, materialTexture);
     trackSupportMesh = new THREE.Mesh(trackSupportInstancedBufferGeometry, materialSolidColor);
+
+    trackWoodMesh.frustumCulled = false; 
+    trackSupportMesh.frustumCulled = false; 
     scene.add(trackWoodMesh);
     scene.add(trackSupportMesh);
     animate();
@@ -226,14 +232,52 @@ function updateCoaster(added, removed) {
     createTracks(added, false);
     updateCamera();
 }
-function updateCamera(){
-    //if (cameraType == "Auto") {
-    //    //camera.lookAt(
-    //    //    translationVector[trackCount - 1].x,
-    //    //    translationVector[trackCount - 1].y,
-    //    //    translationVector[trackCount - 1].z
-    //    //        );
-    //}
+
+function updateCamera() {
+
+    ////Cam 1, Cam 2
+    //controls.target.set(trackObjects[trackCount - 1].x, trackObjects[trackCount - 1].y, trackObjects[trackCount - 1].z);
+
+    ////Cam 1
+    //controls.forceUpdate(controls.getPolarAngle(), THREE.Math.degToRad(trackObjects[trackCount - 1].yaw + 30), controls.getRadius());
+    if (cameraTween != null) {
+        cameraTween.stop();
+    }
+    let data = {
+        x: controls.target.x,
+        y: controls.target.y,
+        z: controls.target.z,
+        azimuthal: controls.getAzimuthalAngle()
+    };
+    cameraTween = new TWEEN.Tween(data).to({
+        x: trackObjects[trackCount - 1].x,
+        y: trackObjects[trackCount - 1].y,
+        z: trackObjects[trackCount - 1].z,
+        azimuthal: THREE.Math.degToRad(trackObjects[trackCount - 1].yaw + 30),
+        }, 1000)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(function () { 
+            controls.target.set(data.x, data.y, data.z);
+            controls.forceUpdate(controls.getPolarAngle(), data.azimuthal, controls.getRadius());
+        }).start();
+
+
+////controls.radius = 15;
+    
+       // controls.forceUpdate(THREE.Math.degToRad(trackObjects[trackCount - 1].yaw + 30), controls.getAzimuthalAngle(), 3)
+   // controls.setRadius(5);
+    
+    
+   //// camera.position.z = trackObjects[trackCount - 1].y + Math.sin(Date.now() / 1000) * radius;
+   // controls.setAzimuthalAngle(THREE.Math.degToRad(trackObjects[trackCount - 1].yaw + 30));
+   // controls.setPolarAngle(.6);
+//theta: -0.021816615649928893
+    //3.0379637292513406
+   // Current Slowly To This
+    //camera.position.x = trackObjects[trackCount - 1].x + Math.cos(THREE.Math.degToRad(trackObjects[trackCount - 1].yaw + 30)) * controls.spherical.radius;
+    //camera.position.z = trackObjects[trackCount - 1].z - Math.sin(THREE.Math.degToRad(trackObjects[trackCount - 1].yaw + 30)) * controls.spherical.radius;
+    //camera.position.y = trackObjects[trackCount - 1].y + 3;
+
 }
 
 function createTracks(added, color) {
@@ -268,11 +312,13 @@ function createTrack(trackCount, trackIndex) {
     trackObjects[trackCount].z = Blazor.platform.readFloatField(dataReference, trackIndex + 4) * TRACK_POSTION_SCALE + TRACK_Z_OFFSET;
     trackObjects[trackCount].yaw = Blazor.platform.readFloatField(dataReference, trackIndex + 12) + 90;
     trackObjects[trackCount].pitch = Blazor.platform.readFloatField(dataReference, trackIndex + 16);
+    trackObjects[trackCount].yawRad = THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 12) + 90);
+    trackObjects[trackCount].pitchRad = THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 16));
 
     var e = new THREE.Euler();
     e.order = 'ZYX';
-    e.x = THREE.Math.degToRad(trackObjects[trackCount].pitch);
-    e.y = THREE.Math.degToRad(trackObjects[trackCount].yaw);
+    e.x = trackObjects[trackCount].pitchRad;
+    e.y = trackObjects[trackCount].yawRad;
     e.z = 0;
     var quaternion = new THREE.Quaternion();
     quaternion.setFromEuler(e, false);
@@ -303,6 +349,8 @@ function animate(time) {
     fps = times.length;
     
     stats.begin();
+
+
     controls.update();
     //controlsOne.update();
    // controlsTwo.update();
