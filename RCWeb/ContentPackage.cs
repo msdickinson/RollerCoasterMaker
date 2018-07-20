@@ -34,6 +34,15 @@ using System.Threading.Tasks;
                 added, removed);
         }
 
+        const string CoasterUpdateCameraIdentifier = "ContentPackage.UpdateCamera";
+        public static string CoasterUpdateCamera(string camera)
+        {
+            return RegisteredFunction.Invoke<string>(
+                CoasterUpdateCameraIdentifier,
+                camera);
+        }
+
+
         const string LoadedIdentifier = "ContentPackage.Loaded";
         public static string Loaded(string loaded)
         {

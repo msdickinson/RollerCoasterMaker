@@ -17,11 +17,11 @@ namespace RCLibrary.Support
 
             for (int i = 0; i < 15; i++)
             {
-                float startYaw = coaster.Tracks[coaster.TrackCount - 1 - i].Yaw;
+                float startYaw = coaster.LastTrack.Yaw;
                 foreach (float angle in angles)
                 {
                     results = Builder.BuildTracks(DetermineActions(angle, i, startYaw), coaster);
-                    if (results == TaskResults.Successful)
+                    if (results == TaskResults.Successful && coaster.LastTrack.Yaw == angle)
                         return results;
                     else
                         coaster.Reset();
@@ -48,7 +48,7 @@ namespace RCLibrary.Support
             {
                 differnce += 360;
             }
-            TrackType direction = (differnce > 0) ? TrackType.Left : TrackType.Right;
+            TrackType direction = (differnce >= 0) ? TrackType.Left : TrackType.Right;
             BuildAction buildAction = new BuildAction(direction);
             differnce = Math.Abs(differnce);
             int tracks = (int)(differnce / Globals.STANDARD_ANGLE_CHANGE);

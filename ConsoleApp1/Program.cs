@@ -1,8 +1,9 @@
-﻿using RCLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace RCConsole
+namespace ConsoleApp1
 {
     class Program
     {
@@ -10,6 +11,8 @@ namespace RCConsole
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
 
+            game.BuildUpward();
+            game.BuildDownward();
             game.BuildLoop();
             game.Back();
             game.BuildStright();

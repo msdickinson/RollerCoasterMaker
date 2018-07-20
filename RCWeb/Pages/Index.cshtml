@@ -1,7 +1,7 @@
 ﻿@page "/"
-<div class="console"> <p style="color:whitesmoke">Tracks: @game.coaster.TrackCount</p></div>
+@*<div class="console"> <p style="color:whitesmoke">Tracks: @game.coaster.TrackCount</p></div>*@
 <div class="flex-container">
-    @if(UISection == "Build")
+    @if (UISection == "Build")
     {
         <img onclick="@BuildLeft" src="/assets/images/left64.png" class="rc_btn" />
         <img onclick="@BuildStright" src="/assets/images/stright64.png" class="rc_btn" />
@@ -10,30 +10,37 @@
         <img onclick="@BuildDown" src="/assets/images/down64.png" class="rc_btn" />
         <img onclick="@Back" src="/assets/images/back64.png" class="rc_btn" />
     }
-    else if(UISection == "Custom")
+    else if (UISection == "Custom")
     {
         <img onclick="@BuildLoop" src="/assets/images/loop64.png" class="rc_btn" />
-        <img src="/assets/images/upward64.png" class="rc_btn rc_btn_disabled" />
-        <img src="/assets/images/downward64.png" class="rc_btn rc_btn_disabled" />
-        <img src="/assets/images/flaten64.png" class="rc_btn rc_btn_disabled" />
+        <img onclick="@BuildUpward" src="/assets/images/upward64.png" class="rc_btn" />
+        <img onclick="@BuildDownward" src="/assets/images/downward64.png" class="rc_btn" />
+        <img onclick="@BuildFlaten" src="/assets/images/flaten64.png" class="rc_btn" />
     }
-    else if(UISection == "Camera")
+    else if (UISection == "Camera")
     {
-        <img src="/assets/images/cameraAuto64.png" class="rc_btn rc_btn_disabled" />
-        <img src="/assets/images/cameraLastTrack64.png" class="rc_btn rc_btn_disabled" />
-        <img src="/assets/images/camera64.png" class="rc_btn rc_btn_disabled" />
+        <img onclick="@(() => UpdateCamera("Auto"))" src="/assets/images/cameraAutoB64.png" class=@(activeCamera == "Auto" ? "rc_btn" : "rc_btn rc_btn_disabled") />
+        <img onclick="@(() => UpdateCamera("Follow"))" src="/assets/images/cameraFollow64.png" class=@(activeCamera == "Follow" ? "rc_btn" : "rc_btn rc_btn_disabled") />
+        <img onclick="@(() => UpdateCamera("Free"))" src="/assets/images/cameraFree64.png" class=@(activeCamera == "Free"  ? "rc_btn" : "rc_btn rc_btn_disabled") />
     }
+
 </div>
 <div class="flex-container-two">
     <img onclick="@(() => UISection = "Build")" src="/assets/images/right64.png" class="rc_btn" />
     <img onclick="@(() => UISection = "Custom")" src="/assets/images/railway_tracks_128.png" class="rc_btn" />
     <img onclick="@(() => UISection = "Camera")" src="/assets/images/camera64.png" class="rc_btn" />
-    <img src="/assets/images/finish64.png" class="rc_btn rc_btn_disabled" />
+    <img  onclick="@BuildFinsh" src="/assets/images/finish64.png" class="rc_btn" />
+
 </div>
 @functions {
     RCLibrary.RollerCoasterMaker game = new RCLibrary.RollerCoasterMaker();
     string loaded = "";
     string UISection = "Build";
+    string activeCamera = "Auto";
+    public  bool AutoCamera = true;
+    public bool FollowCamera = false;
+    public bool FreeCamera = false;
+
     bool firstRender = true;
     //protected override Task OnAfterRenderAsync()
     //{
@@ -96,6 +103,32 @@
     {
         game.BuildLoop();
         SendCoaster();
+    }
+    void BuildUpward()
+    {
+        game.BuildUpward();
+        SendCoaster();
+    }
+    void BuildDownward()
+    {
+        game.BuildDownward();
+        SendCoaster();
+    }
+    void BuildFlaten()
+    {
+        game.BuildFlaten();
+        SendCoaster();
+    }
+
+    void BuildFinsh()
+    {
+        game.BuildFinsh();
+        SendCoaster();
+    }
+    void UpdateCamera(string cameraType)
+    {
+        activeCamera = cameraType;
+        ContentPackage.CoasterUpdateCamera(cameraType);
     }
 
     void Log()

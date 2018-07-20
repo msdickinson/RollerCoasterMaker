@@ -58,6 +58,7 @@ a {
     border-radius: 5px;
     width: 50px;
     margin: 10px auto;
+
 }
 
 .flex-container {
@@ -98,7 +99,15 @@ a {
     margin: 2px;
     max-width: 100%;
     height: auto;
-    display:block
+    display: block;
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .rc_btn_disabled {

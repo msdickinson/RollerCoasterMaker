@@ -63,15 +63,19 @@ namespace RCLibrary
         }
         public void BuildDownward()
         {
-         //   builder.ProcessBuildAction(coaster, new BuildDownward());
+            builder.ProcessBuildAction(coaster, new BuildDownward());
         }
-        public void BuildUpWard()
+        public void BuildUpward()
         {
-         //   builder.ProcessBuildAction(coaster, new BuildUpWard());
+            builder.ProcessBuildAction(coaster, new BuildUpward());
         }
         public void BuildFlaten()
         {
-            //builder.ProcessBuildAction(coaster, new BuildFlaten());
+            builder.ProcessBuildAction(coaster, new BuildFlaten());
+        }
+        public void BuildFinsh()
+        {
+            builder.ProcessBuildAction(coaster, new BuildFinsh());
         }
         public void BuildToX(float x, float withInX)
         {

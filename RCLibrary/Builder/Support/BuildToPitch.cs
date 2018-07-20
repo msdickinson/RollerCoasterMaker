@@ -17,7 +17,7 @@ namespace RCLibrary.Support
 
             for (int i = 0; i < 15; i++)
             {
-                float startPitch = coaster.Tracks[coaster.TrackCount - 1 - i].Pitch;
+                float startPitch = coaster.LastTrack.Pitch;
                 foreach (float angle in angles)
                 {
                     results = Builder.BuildTracks(DetermineActions(angle, i, startPitch), coaster);
@@ -40,7 +40,7 @@ namespace RCLibrary.Support
             }
 
             float differnce = goalPitch - startPitch;
-            if(differnce > 180)
+            if(differnce >= 180)
             {
                 differnce -= 360;
             }

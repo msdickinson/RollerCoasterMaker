@@ -10,36 +10,149 @@ namespace RCLibrary.Support
     {
         public static TaskResults Run(Coaster coaster, float x, float y, float xRange, float yRange)
         {
-            TaskResults results = TaskResults.Successful;
+            //Determine Left, Or Right to Try first
+            TaskResults results = TaskResults.Fail;
+            bool Left = true;
+            float  yawGoal = Convert.ToSingle(Math.Atan2(
+                                     (y - coaster.LastTrack.Y),
+                                     (x - coaster.LastTrack.X)) * 180 / Math.PI);
+            int totalAdjustments = (int)(yawGoal / Globals.STANDARD_ANGLE_CHANGE);
+
+            if ((yawGoal % 15) > Globals.STANDARD_ANGLE_CHANGE / 2)
+                totalAdjustments++;
+
+            yawGoal = totalAdjustments * Globals.STANDARD_ANGLE_CHANGE;
+            Left = (Math.Abs(yawGoal - coaster.LastTrack.Yaw) < 180);
+
+            //Try Level
+            results = Runner(coaster, x, y, xRange, yRange, Left);
+            if (results != TaskResults.Successful)
+            {
+                coaster.Reset();
+                results = Runner(coaster, x, y, xRange, yRange, !Left);
+            }
+
+            //Try Going Up First
+            if (results != TaskResults.Successful)
+            {
+                results = Runner(coaster, x, y, xRange, yRange, Left, 100);
+            }
+            if (results != TaskResults.Successful)
+            {
+                coaster.Reset();
+                results = Runner(coaster, x, y, xRange, yRange, !Left, 100);
+            }
+            if (results != TaskResults.Successful)
+            {
+                coaster.Reset();
+                results = Runner(coaster, x, y, xRange, yRange, Left, 100, true);
+            }
+
+
+            //Try Going Down First
+            if (results != TaskResults.Successful)
+            {
+                coaster.Reset();
+                results = Runner(coaster, x, y, xRange, yRange, Left, -100);
+            }
+            if (results != TaskResults.Successful)
+            {
+                coaster.Reset();
+                results = Runner(coaster, x, y, xRange, yRange, !Left, -100);
+            }
+            if (results != TaskResults.Successful)
+            {
+                coaster.Reset();
+                results = Runner(coaster, x, y, xRange, yRange, Left, -100, true);
+            }
+
+
+            //Reset Coaster
+            if (results != TaskResults.Successful)
+            {
+                coaster.Reset();
+            }
+            return results;
+
+        }
+
+        private static TaskResults Runner(Coaster coaster, float x, float y, float xRange, float yRange, bool TurnLeft, float ChangeZ = 0, bool changeYawAfterZChange = false, float ChangeZWithin = 50)
+        {
+            bool TurnedToAngleForceDirectionOnce = false;
+            TaskResults results = TaskResults.Fail;
             List<BuildAction> buildActions = new List<BuildAction>();
-            bool firstStrightTrack = true;
-            float last = 0;
-            float lastDiffernce = 0;
-            float yawGoal = 0;
+            float yawGoal = Convert.ToSingle(Math.Atan2(
+                                     (y - coaster.LastTrack.Y),
+                                     (x - coaster.LastTrack.X)) * 180 / Math.PI);
+
+  
+            if (yawGoal < 0)
+                yawGoal = yawGoal + 360;
+            int totalAdjustments = (int)(yawGoal / Globals.STANDARD_ANGLE_CHANGE);
+
+            if ((yawGoal % 15) > Globals.STANDARD_ANGLE_CHANGE / 2)
+                totalAdjustments++;
+
+            yawGoal = totalAdjustments * Globals.STANDARD_ANGLE_CHANGE;
+
+            if (ChangeZ != 0)
+            {
+                results = BuildToZ.Run(coaster, coaster.LastTrack.Z + ChangeZ, 50);
+                if (results != TaskResults.Successful)
+                    return results;
+            }
+
+            if (changeYawAfterZChange)
+            { 
+                while (coaster.LastTrack.Yaw != yawGoal)
+                {
+                    if (TurnLeft)
+                    {
+                        buildActions.Add(new BuildAction(TrackType.Left));
+                    }
+                    else
+                    {
+                        buildActions.Add(new BuildAction(TrackType.Right));
+                    }
+
+                    results = Builder.BuildTracks(buildActions, coaster);
+
+                    if (results != TaskResults.Successful)
+                        return results;
+                    buildActions.Clear();
+                }
+                TurnedToAngleForceDirectionOnce = true;
+             }
+
+
             results = BuildToPitch.Run(coaster, new List<float>() { 0 });
             if (results != TaskResults.Successful)
                 return results;
 
-            while (!((coaster.Tracks[coaster.TrackCountBuild - 1].X < x + (xRange / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].X > x - (xRange / 2)) && (coaster.Tracks[coaster.TrackCountBuild - 1].Y < y + (yRange / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].Y > y - (yRange / 2))) && results == TaskResults.Successful)
+
+            while (!((coaster.LastTrack.X < x + (xRange / 2) && coaster.LastTrack.X > x - (xRange / 2)) && (coaster.LastTrack.Y < y + (yRange / 2) && coaster.LastTrack.Y > y - (yRange / 2))) && results == TaskResults.Successful)
             {
-                //Determine Best Yaw
                 yawGoal = Convert.ToSingle(Math.Atan2(
-                    (double)(y - coaster.Tracks[coaster.TrackCountBuild - 1].Y),
-                    (double)(x - coaster.Tracks[coaster.TrackCountBuild - 1].X)) * 180 / Math.PI);
+                          (y - coaster.LastTrack.Y),
+                          (x - coaster.LastTrack.X)) * 180 / Math.PI);
 
                 if (yawGoal < 0)
                     yawGoal = yawGoal + 360;
 
                 //Get YawGoal To Nearest Angle Game Can Handle
-                int totalAdjustments = (int)(yawGoal / Globals.STANDARD_ANGLE_CHANGE);
+                totalAdjustments = (int)(yawGoal / Globals.STANDARD_ANGLE_CHANGE);
 
                 if ((yawGoal % 15) > Globals.STANDARD_ANGLE_CHANGE / 2)
                     totalAdjustments++;
 
                 yawGoal = totalAdjustments * Globals.STANDARD_ANGLE_CHANGE;
 
-                if (coaster.Tracks[coaster.TrackCountBuild - 1].Yaw == yawGoal)
+
+             
+                if (coaster.LastTrack.Yaw == yawGoal)
                 {
+                    TurnedToAngleForceDirectionOnce = true;
+                    float lastDistance = Math.Abs((coaster.LastTrack.X - x) + (coaster.LastTrack.Y - y));
                     buildActions.Add(new BuildAction(TrackType.Stright));
                     results = Builder.BuildTracks(buildActions, coaster);
 
@@ -47,27 +160,38 @@ namespace RCLibrary.Support
                         return results;
                     buildActions.Clear();
 
-                    float differnce = Math.Abs((coaster.Tracks[coaster.TrackCountBuild - 1].X - x) + (coaster.Tracks[coaster.TrackCountBuild - 1].Y - y));
-                    if (!firstStrightTrack)
+                    float distance = Math.Abs((coaster.LastTrack.X - x) + (coaster.LastTrack.Y - y));
+
+                    if (distance >= lastDistance)
+                        return TaskResults.Fail;
+
+                    lastDistance = distance;
+
+                }
+                else if(!TurnedToAngleForceDirectionOnce)
+                {
+                    if (TurnLeft)
                     {
-                        //This Means You Passed The Goal Point, This could have been done by turning, Or After the Fact. But You Are now going the wrong way.
-                        if (differnce > lastDiffernce)
-                            return TaskResults.Fail;
+                        buildActions.Add(new BuildAction(TrackType.Left));
                     }
                     else
-                        firstStrightTrack = true;
+                    {
+                        buildActions.Add(new BuildAction(TrackType.Right));
+                    }
+                 
+                    results = Builder.BuildTracks(buildActions, coaster);
 
-                    last = coaster.Tracks[coaster.TrackCountBuild - 1].X + coaster.Tracks[coaster.TrackCountBuild - 1].Y;
-                    lastDiffernce = differnce;
-
+                    if (results != TaskResults.Successful)
+                        return results;
+                    buildActions.Clear();
                 }
                 else
                 {
                     TrackType type = new TrackType();
 
-                    if (coaster.Tracks[coaster.TrackCountBuild - 1].Yaw - yawGoal > 0)
+                    if (coaster.LastTrack.Yaw - yawGoal > 0)
                     {
-                        if (Math.Abs(coaster.Tracks[coaster.TrackCountBuild - 1].Yaw - yawGoal) < 180)
+                        if (Math.Abs(coaster.LastTrack.Yaw - yawGoal) < 180)
                             type = TrackType.Right;
                         else
                             type = TrackType.Left;
@@ -75,7 +199,7 @@ namespace RCLibrary.Support
                     }
                     else
                     {
-                        if (Math.Abs(yawGoal - coaster.Tracks[coaster.TrackCountBuild - 1].Yaw) < 180)
+                        if (Math.Abs(yawGoal - coaster.LastTrack.Yaw) < 180)
                             type = TrackType.Left;
                         else
                             type = TrackType.Right;
@@ -92,7 +216,8 @@ namespace RCLibrary.Support
                 }
 
             }
-            if (coaster.Tracks[coaster.TrackCountBuild - 1].X < x + (xRange / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].X > x - (xRange / 2) && (coaster.Tracks[coaster.TrackCountBuild - 1].Y < y + (yRange / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].Y > y - (yRange / 2)))
+
+            if (coaster.LastTrack.X < x + (xRange / 2) && coaster.LastTrack.X > x - (xRange / 2) && (coaster.LastTrack.Y < y + (yRange / 2) && coaster.LastTrack.Y > y - (yRange / 2)))
             {
                 return TaskResults.Successful;
             }

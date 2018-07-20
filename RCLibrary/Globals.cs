@@ -41,7 +41,7 @@ namespace RCLibrary
 
         //Track
         public const int MAX_TRACKS = 5000;
-        public const float TRACK_LENGTH_2X = (float)7.7;
+        public const float TRACK_LENGTH_2X = (float)7.7 * 2;
         public const float TRACK_LENGTH = (float)7.7;
         public const float HALF_TRACK_LENGTH = (float)7.7/2;
         public const float TRACK_HIGHT = (float)1.2;

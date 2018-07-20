@@ -27,7 +27,7 @@ namespace RCLibrary.Support
             TaskResults results = TaskResults.Successful;
             float yawGoal = 0;
 
-            if (x > coaster.Tracks[coaster.TrackCountBuild - 1].X)
+            if (x > coaster.LastTrack.X)
                 yawGoal = 0;
             else
                 yawGoal = 180;
@@ -40,9 +40,9 @@ namespace RCLibrary.Support
             if(results != TaskResults.Successful)
                 return results;
 
-            while (!((coaster.Tracks[coaster.TrackCountBuild - 1].X < x + (withIn / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].X > x - (withIn / 2))) && results == TaskResults.Successful)
+            while (!((coaster.LastTrack.X < x + (withIn / 2) && coaster.LastTrack.X > x - (withIn / 2))) && results == TaskResults.Successful)
             {
-                if (coaster.Tracks[coaster.TrackCountBuild - 1].Yaw == yawGoal)
+                if (coaster.LastTrack.Yaw == yawGoal)
                 {
 
                     buildActions.Add(new BuildAction(TrackType.Stright));
@@ -51,7 +51,7 @@ namespace RCLibrary.Support
                         return results;
                     buildActions.Clear();
 
-                    float differnce = Math.Abs(coaster.Tracks[coaster.TrackCountBuild - 1].X - lastX);
+                    float differnce = Math.Abs(coaster.LastTrack.X - lastX);
                     if (!firstStrightTrack)
                     {
                         //This Means You Passed The Goal Point, This could have been done by turning, Or After the Fact. But You Are now going the wrong way.
@@ -61,7 +61,7 @@ namespace RCLibrary.Support
                     else
                         firstStrightTrack = true;
 
-                    lastX = coaster.Tracks[coaster.TrackCountBuild - 1].X;
+                    lastX = coaster.LastTrack.X;
                     lastDiffernce = differnce;
                 }
                 else
@@ -72,7 +72,7 @@ namespace RCLibrary.Support
                 }
 
             }
-            if (coaster.Tracks[coaster.TrackCountBuild - 1].X < x + (withIn / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].X > x - (withIn / 2))
+            if (coaster.LastTrack.X < x + (withIn / 2) && coaster.LastTrack.X > x - (withIn / 2))
                 return TaskResults.Successful;
             else
                 return TaskResults.Fail;

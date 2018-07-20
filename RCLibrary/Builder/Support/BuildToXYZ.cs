@@ -25,15 +25,15 @@ namespace RCLibrary.Support
             float yawGoal = 0;
             float pitchGoal = 0;
 
-            while (!
-                (coaster.Tracks[coaster.TrackCountBuild - 1].X < x + (xRange / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].X > x - (xRange / 2))
-                && (coaster.Tracks[coaster.TrackCountBuild - 1].Y < y + (yRange / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].Y > y - (yRange / 2))
-                && (coaster.Tracks[coaster.TrackCountBuild - 1].Z <= (z + (zRange / 2)) && coaster.Tracks[coaster.TrackCountBuild - 1].Z >= (z - (zRange / 2)))
+            while (!(
+                (coaster.LastTrack.X < x + (xRange / 2) && coaster.LastTrack.X > x - (xRange / 2))
+                && (coaster.LastTrack.Y < y + (yRange / 2) && coaster.LastTrack.Y > y - (yRange / 2))
+                && (coaster.LastTrack.Z <= (z + (zRange / 2)) && coaster.LastTrack.Z >= (z - (zRange / 2))))
                 && results == TaskResults.Successful)
             {
                 //Determine Best Yaw
-                yawGoal = Convert.ToSingle(Math.Atan2((double)(coaster.Tracks[coaster.TrackCountBuild - 1].Y),
-                                                      (double)(x - coaster.Tracks[coaster.TrackCountBuild - 1].X)) * 180 / Math.PI);
+                yawGoal = Convert.ToSingle(Math.Atan2((double)(coaster.LastTrack.Y),
+                                                      (double)(x - coaster.LastTrack.X)) * 180 / Math.PI);
 
                 if (yawGoal < 0)
                     yawGoal = yawGoal + 360;
@@ -47,22 +47,22 @@ namespace RCLibrary.Support
                 yawGoal = totalAdjustments * Globals.STANDARD_ANGLE_CHANGE;
 
                 //If Z to High, Z To Low
-                if (coaster.Tracks[coaster.TrackCountBuild - 1].Z <= (z + (zRange / 2)) && coaster.Tracks[coaster.TrackCountBuild - 1].Z >= (z - (zRange / 2)))
+                if (coaster.LastTrack.Z <= (z + (zRange / 2)) && coaster.LastTrack.Z >= (z - (zRange / 2)))
                     pitchGoal = 0;
-                else if ((z - coaster.Tracks[coaster.TrackCountBuild - 1].Z) > 0)
+                else if ((z - coaster.LastTrack.Z) > 0)
                     pitchGoal = 90;
                 else
                     pitchGoal = 270;
 
                 //Determine Best Yaw
-                if (coaster.Tracks[coaster.TrackCountBuild - 1].Yaw == yawGoal && coaster.Tracks[coaster.TrackCountBuild - 1].Pitch == pitchGoal)
+                if (coaster.LastTrack.Yaw == yawGoal && coaster.LastTrack.Pitch == pitchGoal)
                 {
 
                     buildActions.Add(new BuildAction(TrackType.Stright));
                     results = Builder.BuildTracks(buildActions, coaster);
                     buildActions.Clear();
 
-                    float differnce = Math.Abs((coaster.Tracks[coaster.TrackCountBuild - 1].X - x) + (coaster.Tracks[coaster.TrackCountBuild - 1].Y - y));
+                    float differnce = Math.Abs((coaster.LastTrack.X - x) + (coaster.LastTrack.Y - y));
                     if (!firstStrightTrack)
                     {
                         //This Means You Passed The Goal Point, This could have been done by turning, Or After the Fact. But You Are now going the wrong way.
@@ -72,7 +72,7 @@ namespace RCLibrary.Support
                     else
                         firstStrightTrack = true;
 
-                    last = coaster.Tracks[coaster.TrackCountBuild - 1].X + coaster.Tracks[coaster.TrackCountBuild - 1].Y;
+                    last = coaster.LastTrack.X + coaster.LastTrack.Y;
                     lastDiffernce = differnce;
 
                 }
@@ -80,11 +80,11 @@ namespace RCLibrary.Support
                 {
                     int yawDirection = 0;
                     int pitchDirection = 0;
-                    if (!(coaster.Tracks[coaster.TrackCountBuild - 1].Yaw == yawGoal))
+                    if (!(coaster.LastTrack.Yaw == yawGoal))
                     {
-                        if (coaster.Tracks[coaster.TrackCountBuild - 1].Yaw - yawGoal > 0)
+                        if (coaster.LastTrack.Yaw - yawGoal > 0)
                         {
-                            if (Math.Abs(coaster.Tracks[coaster.TrackCountBuild - 1].Yaw - yawGoal) < 180)
+                            if (Math.Abs(coaster.LastTrack.Yaw - yawGoal) < 180)
                                 yawDirection = -1; //Right
                             else
                                 yawDirection = 1; //Left
@@ -92,7 +92,7 @@ namespace RCLibrary.Support
                         }
                         else
                         {
-                            if (Math.Abs(yawGoal - coaster.Tracks[coaster.TrackCountBuild - 1].Yaw) < 180)
+                            if (Math.Abs(yawGoal - coaster.LastTrack.Yaw) < 180)
                                 yawDirection = 1; //Left
                             else
                                 yawDirection = -1; //Right
@@ -100,11 +100,11 @@ namespace RCLibrary.Support
                         }
                     }
                     //
-                    if (!(coaster.Tracks[coaster.TrackCountBuild - 1].Pitch == pitchGoal))
+                    if (!(coaster.LastTrack.Pitch == pitchGoal))
                     {
-                        if (coaster.Tracks[coaster.TrackCountBuild - 1].Pitch - pitchGoal > 0)
+                        if (coaster.LastTrack.Pitch - pitchGoal > 0)
                         {
-                            if ((coaster.Tracks[coaster.TrackCountBuild - 1].Pitch - pitchGoal > 360 - coaster.Tracks[coaster.TrackCountBuild - 1].Pitch))
+                            if ((coaster.LastTrack.Pitch - pitchGoal > 360 - coaster.LastTrack.Pitch))
                                 pitchDirection = 1; //Up
                             else
                                 pitchDirection = -1; //Down
@@ -112,7 +112,7 @@ namespace RCLibrary.Support
                         }
                         else
                         {
-                            if ((pitchGoal - coaster.Tracks[coaster.TrackCountBuild - 1].Pitch > 360 - pitchGoal))
+                            if ((pitchGoal - coaster.LastTrack.Pitch > 360 - pitchGoal))
                                 pitchDirection = -1; //Down
                             else
                                 pitchDirection = 1; //Up
@@ -126,9 +126,9 @@ namespace RCLibrary.Support
 
             }
 
-            if ((coaster.Tracks[coaster.TrackCountBuild - 1].X < x + (xRange / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].X > x - (xRange / 2)) 
-                && (coaster.Tracks[coaster.TrackCountBuild - 1].Y < y + (yRange / 2) && coaster.Tracks[coaster.TrackCountBuild - 1].Y > y - (yRange / 2)) 
-                && (coaster.Tracks[coaster.TrackCountBuild - 1].Z <= (z + (zRange / 2)) && coaster.Tracks[coaster.TrackCountBuild - 1].Z >= (z - (zRange / 2))))
+            if ((coaster.LastTrack.X < x + (xRange / 2) && coaster.LastTrack.X > x - (xRange / 2)) 
+                && (coaster.LastTrack.Y < y + (yRange / 2) && coaster.LastTrack.Y > y - (yRange / 2)) 
+                && (coaster.LastTrack.Z <= (z + (zRange / 2)) && coaster.LastTrack.Z >= (z - (zRange / 2))))
                 return TaskResults.Successful;
             else
                 return TaskResults.Fail;

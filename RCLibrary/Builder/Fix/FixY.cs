@@ -10,7 +10,7 @@ namespace RCLibrary
     {
         public static TaskResults Run(Coaster coaster)
         {
-            List<float> angles = new List<float>() { 0, 180, MathHelper.KeepBetween360Degrees(Builder.lastRuleIssueTrack.Yaw + 180) };
+            List<float> angles = new List<float>() { 180, 0, MathHelper.KeepBetween360Degrees(Builder.lastRuleIssueTrack.Yaw + 180) };
             return BuildToYaw.Run(coaster, angles);
         }
     }

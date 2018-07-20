@@ -25,14 +25,14 @@ namespace RCLibrary
             //    return taskResults;
             //}
             ////Go To XYZ
-            //float x = coaster.Tracks[coaster.TrackCount - 1].X;
-            //float y = coaster.Tracks[coaster.TrackCount - 1].Y;
-            //float z = coaster.Tracks[coaster.TrackCount - 1].Z;
+            //float x = coaster.LastTrack.X;
+            //float y = coaster.LastTrack.Y;
+            //float z = coaster.LastTrack.Z;
 
             ////Determine
-            //x = x + (float)(Math.Cos(MathHelper.ToRadians(coaster.Tracks[coaster.TrackCount - 1].Yaw)) * Math.Cos(MathHelper.ToRadians(coaster.Tracks[coaster.TrackCount - 1].Pitch)) * Globals.TRACK_LENGTH * 10);
-            //y = y + (float)(Math.Sin(MathHelper.ToRadians(coaster.Tracks[coaster.TrackCount - 1].Yaw)) * Math.Cos(MathHelper.ToRadians(coaster.Tracks[coaster.TrackCount - 1].Pitch)) * Globals.TRACK_LENGTH * 10);
-            //z = z + (float)(Math.Sin(MathHelper.ToRadians(coaster.Tracks[coaster.TrackCount - 1].Pitch)) * Globals.TRACK_LENGTH * 10);
+            //x = x + (float)(Math.Cos(MathHelper.ToRadians(coaster.LastTrack.Yaw)) * Math.Cos(MathHelper.ToRadians(coaster.LastTrack.Pitch)) * Globals.TRACK_LENGTH * 10);
+            //y = y + (float)(Math.Sin(MathHelper.ToRadians(coaster.LastTrack.Yaw)) * Math.Cos(MathHelper.ToRadians(coaster.LastTrack.Pitch)) * Globals.TRACK_LENGTH * 10);
+            //z = z + (float)(Math.Sin(MathHelper.ToRadians(coaster.LastTrack.Pitch)) * Globals.TRACK_LENGTH * 10);
             ////Check if there in bonunds and that there is no track at that location
 
             ////Try To Build To them

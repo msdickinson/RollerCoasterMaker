@@ -9,6 +9,7 @@ namespace RCLibrary
 {
     static class Rules
     {
+
         public static bool MaxX(float x)
         {
             if (x > Globals.BUILD_AREA_SIZE_X)
@@ -220,13 +221,10 @@ namespace RCLibrary
 
         }
         public static int lastCollsionIndex = 0;
-        public static bool CollisonX(Coaster coaster, float xA, float yA, float zA, int totalTracks = 1)
+        public static bool CollisonX(Coaster coaster, float xA, float yA, float zA)
         {
             //IQNORE 3 + All "Back Tracks"
             int trackMaxPosition = coaster.TrackCountBuild - 3;
-            Track t1 = coaster.Tracks[coaster.TrackCountBuild - 1];
-            Track t2 = coaster.Tracks[coaster.TrackCountBuild - 2];
-            Track t3 = coaster.Tracks[coaster.TrackCountBuild - 3];
             int xT = (int)(xA / Globals.REGION_LENGTH);
             int yT = (int)(yA / Globals.REGION_LENGTH);
             int zT = (int)(zA / Globals.REGION_LENGTH);
@@ -250,7 +248,7 @@ namespace RCLibrary
                                 j = xA - t.X;
                                 q = yA - t.Y;
                                 g = zA - t.Z;
-                                if (((j * j) + (q * q) + (g * g)) <= Globals.TRACK_HALF_LENGH_SQUARED 
+                                if ((Math.Sqrt((j * j) + (q * q) + (g * g)) <= Globals.TRACK_LENGTH_2X) 
                                     && (t.Position < trackMaxPosition))
                                 {
                                     lastCollsionIndex = t.Position;

@@ -19,7 +19,7 @@ namespace RCLibrary
             {
                 buildActions.Add(new BuildAction(true));
             }
-            return Builder.BuildTracks(buildActions, coaster);
+            return Builder.BuildTracks(buildActions, coaster, true);
         }
     }
 }

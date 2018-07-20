@@ -324,7 +324,7 @@ namespace NUnitTest
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
            
-            game.BuildUpWard();
+            game.BuildUpward();
 
             Assert.AreEqual(false, game.builder.lastBuildActionFail);
         }
@@ -342,7 +342,7 @@ namespace NUnitTest
             {
                 game.BuildStright();
             }
-            game.BuildUpWard();
+            game.BuildUpward();
 
             Assert.AreEqual(false, game.builder.lastBuildActionFail);
         }
@@ -416,25 +416,26 @@ namespace NUnitTest
         //    Assert.IsTrue(game.coaster.Tracks[game.coaster.TrackCount - 1].X >= x - withinX && game.coaster.Tracks[game.coaster.TrackCount - 1].X <= x + withinX &&
         //                  game.coaster.Tracks[game.coaster.TrackCount - 1].Y >= y - withinY && game.coaster.Tracks[game.coaster.TrackCount - 1].Y <= y + withinY);
         //}
-        //[Test]
-        //public void BuildToXYZ()
-        //{
-        //    RollerCoasterMaker game = new RollerCoasterMaker();
-        //   
+        [Test]
+        public void BuildToXYZ()
+        {
+            RollerCoasterMaker game = new RollerCoasterMaker();
 
-        //    float x = 500;
-        //    float y = 500;
-        //    float z = 500;
-        //    float withinX = 100;
-        //    float withinY = 100;
-        //    float withinZ = 100;
-        //    game.BuildToXYZ(x, y, z, withinX, withinY, withinZ);
 
-        //    Assert.IsTrue(game.coaster.Tracks[game.coaster.TrackCount - 1].X >= x - withinX && game.coaster.Tracks[game.coaster.TrackCount - 1].X <= x + withinX &&
-        //                  game.coaster.Tracks[game.coaster.TrackCount - 1].Y >= y - withinY && game.coaster.Tracks[game.coaster.TrackCount - 1].Y <= y + withinY && 
-        //                  game.coaster.Tracks[game.coaster.TrackCount - 1].Z >= z - withinZ && game.coaster.Tracks[game.coaster.TrackCount - 1].Z <= z + withinZ);
-        //}
-        //[Test]
+            float x = Globals.FINSH_AREA_X;
+            float y = Globals.FINSH_AREA_Y;
+            float z = Globals.FINSH_AREA_Z;
+
+            float withinX = Globals.FINSH_AREA_X_RANGE;
+            float withinY = Globals.FINSH_AREA_Y_RANGE;
+            float withinZ = Globals.FINSH_AREA_Z_RANGE;
+            game.BuildToXYZ(x, y, z, withinX, withinY, withinZ);
+
+            Assert.IsTrue(game.coaster.Tracks[game.coaster.TrackCount - 1].X >= x - withinX && game.coaster.Tracks[game.coaster.TrackCount - 1].X <= x + withinX &&
+                          game.coaster.Tracks[game.coaster.TrackCount - 1].Y >= y - withinY && game.coaster.Tracks[game.coaster.TrackCount - 1].Y <= y + withinY &&
+                          game.coaster.Tracks[game.coaster.TrackCount - 1].Z >= z - withinZ && game.coaster.Tracks[game.coaster.TrackCount - 1].Z <= z + withinZ);
+        }
+       // [Test]
         //public void BuildToY()
         //{
         //    RollerCoasterMaker game = new RollerCoasterMaker();

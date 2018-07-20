@@ -74,14 +74,20 @@ namespace RCLibrary
 
             TaskResults results = task.Run(coaster);
             initialTaskResults = results;
+            initialTaskResults = results;
             lastBuildTask = task;
-
+            
             return ProcessAfterBuildAttempt(coaster, results);
         }
 
         public bool ProcessAfterBuildAttempt(Coaster coaster,TaskResults results, string lastTaskName = "")
         {
             this.lastTaskName = lastTaskName;
+
+            if(results != TaskResults.Successful)
+            {
+                coaster.Reset();
+            }
             switch (results)
             {
                 case TaskResults.MaxX:
@@ -133,7 +139,7 @@ namespace RCLibrary
                 return false;
             }
         }
-        public static TaskResults BuildTracks(List<BuildAction> buildActions, Coaster coaster, bool removeChunk = false)
+       public static TaskResults BuildTracks(List<BuildAction> buildActions, Coaster coaster, bool removeChunk = false)
        {
             //Check If Coater Finshed
             TaskResults result = TaskResults.Successful;
@@ -164,7 +170,6 @@ namespace RCLibrary
             float y = 0;
             float z = 0;
             Track lastTrack = new Track();
-            Track TwoTracksBack = new Track();
             //Determine Starting Position
             if (coaster.TrackCountBuild == 0 && coaster.NewTrackCount == 0)
             {
@@ -184,7 +189,7 @@ namespace RCLibrary
                 }
                 else
                 {
-                    lastTrack = coaster.Tracks[coaster.TrackCountBuild - 1];
+                    lastTrack = coaster.LastTrack;
                 }
 
                 yaw = lastTrack.Yaw;
@@ -268,15 +273,13 @@ namespace RCLibrary
             }
             else
             {
-                if(coaster.NewTrackCount > 0)
+                if (coaster.NewTrackCount > 0)
                 {
                     coaster.NewTrackCount--;
-                  //  coaster.QTree.Remove(coaster.NewTracksQTree[coaster.NewTrackCount]);
                 }
-                else if (coaster.Tracks[coaster.TrackCountBuild - 1].TrackType != TrackType.Custom)
+                else if (removeChunk == true || coaster.LastTrack.TrackType != TrackType.Custom)
                 {
                     coaster.TrackCountBuild--;
-                 //   coaster.QTree.Remove(coaster.TracksQTree[coaster.TrackCountBuild]);
                 }
                 else
                 {

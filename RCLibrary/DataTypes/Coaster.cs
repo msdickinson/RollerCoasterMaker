@@ -21,11 +21,6 @@ namespace RCLibrary
 
     public class Coaster
     {
-        //public float[] X = new float[Globals.MAX_TRACKS];
-        //public float[] Y = new float[Globals.MAX_TRACKS];
-        //public float[] Z = new float[Globals.MAX_TRACKS];
-        //public float[] Yaw = new float[Globals.MAX_TRACKS];
-        //public float[] Pitch = new float[Globals.MAX_TRACKS];
 
         public float[] Data = new float[Globals.MAX_TRACKS * 7];
         public bool LastBuildSucessful = false;
@@ -36,6 +31,9 @@ namespace RCLibrary
         public int[] Chunks = new int[Globals.MAX_TRACKS];
         public int TrackCount;
         public int ChunkCount;
+        public const int X_Regions = 300;
+        public const int Y_Regions = 300;
+        public const int Z_Regions = 100;
         public List<Track>[,,] Regions = new List<Track>[Globals.X_Regions, Globals.Y_Regions, Globals.Z_Regions];
         public int TrackCountBuild;
 
@@ -71,6 +69,18 @@ namespace RCLibrary
             //If Tracks were removed
             if (TrackCount != TrackCountBuild)
             {
+                //Remove Tracks From Regions
+                for (int i = TrackCountBuild; i < TrackCount; i++)
+                {
+                   
+                    var region = Regions[
+                        (int)(Tracks[i].X / Globals.REGION_LENGTH),
+                        (int)(Tracks[i].Y / Globals.REGION_LENGTH),
+                        (int)(Tracks[i].Z / Globals.REGION_LENGTH)];
+                    region.RemoveAt(region.Count - 1);
+
+                }
+
                 //Fix Chunks
                 do
                 {
@@ -136,11 +146,7 @@ namespace RCLibrary
         }
 
         public CoasterUpdate GetLastCoasterUpdate()
-        { 
-            if(LastBuildSucessful)
-            {
-
-            }
+        {
             LastBuildSucessful = true;
             CoasterUpdate coasterChange = new CoasterUpdate();
             coasterChange.TracksStarted = TracksStarted;
@@ -153,7 +159,21 @@ namespace RCLibrary
             coasterChange.NewTracks = lastSetOfNewTracks;
 
             return coasterChange;
+        }
 
+        public Track LastTrack
+        {
+            get
+            {
+                if (NewTrackCount == 0)
+                {
+                    return Tracks[TrackCountBuild - 1];
+                }
+                else
+                {
+                    return NewTracks[NewTrackCount - 1];
+                }
+            }
         }
     }
 }
