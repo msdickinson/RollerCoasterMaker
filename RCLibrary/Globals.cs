@@ -36,7 +36,7 @@ namespace RCLibrary
       //  public const float REGION_LENGTH = 4;
         public const float TRACK_HALF_LENGH = TRACK_LENGTH / 2;
         public const float TRACK_HALF_LENGH_SQUARED = TRACK_HALF_LENGH * TRACK_HALF_LENGH;
-        public const int REGIONS = 25;
+        public const int REGIONS = 100;
         public const float X_REGION_LENGTH = BUILD_AREA_SIZE_X / REGIONS;
         public const float Y_REGION_LENGTH = BUILD_AREA_SIZE_Y / REGIONS;
         public const float Z_REGION_LENGTH = BUILD_AREA_SIZE_Z / REGIONS;

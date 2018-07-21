@@ -198,32 +198,28 @@ namespace RCLibrary
         }
         public static int[] found = new int[50000];
         public static int foundIndex = 0;
-        public static bool Collison(Coaster coaster, float x, float y, float z, int totalTracks = 1)
+        public static bool CollisonNewTracks(Coaster coaster, float x, float y, float z)
         {
-            float raidus = Globals.TRACK_LENGTH * totalTracks;
             int count = 0;
             foundIndex = 0;
             float j = 0;
             float q = 0;
-            float d = 0;
-            for (int i = 0; i < coaster.TrackCountBuild; i++)
+            float g = 0;
+            for (int i = 0; i < coaster.NewTrackCount; i++)
             {
                 count++;
-                if (count > coaster.TrackCountBuild - totalTracks - 1)
+                if (count > coaster.NewTrackCount - 3)
                 {
                     return true;
                 }
 
-                j = x - coaster.Tracks[i].X;
-                q = y - coaster.Tracks[i].Y;
-                d = z - coaster.Tracks[i].Z;
-                if (((j * j) + (q * q) + (d * d)) <= raidus * raidus)
+                j = x - coaster.NewTracks[i].X;
+                q = y - coaster.NewTracks[i].Y;
+                g = z - coaster.NewTracks[i].Z;
+                if (Math.Sqrt((j * j) + (q * q) + (g * g)) <= Globals.TRACK_LENGTH_2X)
                 {
-                    found[foundIndex] = i;
-                    // foundIndex++;
                     return false;
                 }
-
             }
             return true;
 
@@ -268,7 +264,9 @@ namespace RCLibrary
                     }
                 }
             }
-            return true;
+
+            //Check New Tracks
+            return CollisonNewTracks(coaster, xA, yA, zA);
         }
     }
 }

@@ -20,63 +20,70 @@ namespace RCLibrary.Support
 
             if ((yawGoal % 15) > Globals.STANDARD_ANGLE_CHANGE / 2)
                 totalAdjustments++;
+            List<BuildAction> buildActions = new List<BuildAction>();
+          
 
             yawGoal = totalAdjustments * Globals.STANDARD_ANGLE_CHANGE;
             Left = (Math.Abs(yawGoal - coaster.LastTrack.Yaw) < 180);
+            for (int i = 0; i <= 3; i++)
+            {
+                //Try Level
+                coaster.Reset();
+                results = Runner(coaster, i, x, y, xRange, yRange, Left);
+                if (results != TaskResults.Successful)
+                {
+                    coaster.Reset();
+                    results = Runner(coaster, i, x, y, xRange, yRange, !Left);
+                }
 
-            //Try Level
-            results = Runner(coaster, x, y, xRange, yRange, Left);
-            if (results != TaskResults.Successful)
-            {
-                coaster.Reset();
-                results = Runner(coaster, x, y, xRange, yRange, !Left);
-            }
-
-            //Try Going Up First
-            if (results != TaskResults.Successful)
-            {
-                results = Runner(coaster, x, y, xRange, yRange, Left, 100);
-            }
-            if (results != TaskResults.Successful)
-            {
-                coaster.Reset();
-                results = Runner(coaster, x, y, xRange, yRange, !Left, 100);
-            }
-            if (results != TaskResults.Successful)
-            {
-                coaster.Reset();
-                results = Runner(coaster, x, y, xRange, yRange, Left, 100, true);
-            }
-
-
-            //Try Going Down First
-            if (results != TaskResults.Successful)
-            {
-                coaster.Reset();
-                results = Runner(coaster, x, y, xRange, yRange, Left, -100);
-            }
-            if (results != TaskResults.Successful)
-            {
-                coaster.Reset();
-                results = Runner(coaster, x, y, xRange, yRange, !Left, -100);
-            }
-            if (results != TaskResults.Successful)
-            {
-                coaster.Reset();
-                results = Runner(coaster, x, y, xRange, yRange, Left, -100, true);
-            }
+                //Try Going Up First
+                if (results != TaskResults.Successful)
+                {
+                    coaster.Reset();
+                    results = Runner(coaster, i, x, y, xRange, yRange, Left, 100);
+                }
+                if (results != TaskResults.Successful)
+                {
+                    coaster.Reset();
+                    results = Runner(coaster, i, x, y, xRange, yRange, !Left, 100);
+                }
+                if (results != TaskResults.Successful)
+                {
+                    coaster.Reset();
+                    results = Runner(coaster, i, x, y, xRange, yRange, Left, 100, true);
+                }
 
 
-            //Reset Coaster
-            if (results != TaskResults.Successful)
-            {
-                coaster.Reset();
+                //Try Going Down First
+                if (results != TaskResults.Successful)
+                {
+                    coaster.Reset();
+                    results = Runner(coaster, i, x, y, xRange, yRange, Left, -100);
+                }
+                if (results != TaskResults.Successful)
+                {
+                    coaster.Reset();
+                    results = Runner(coaster, i, x, y, xRange, yRange, !Left, -100);
+                }
+                if (results != TaskResults.Successful)
+                {
+                    coaster.Reset();
+                    results = Runner(coaster, i, x, y, xRange, yRange, Left, -100, true);
+                }
+
+
+                //Reset Coaster
+                if (results != TaskResults.Successful)
+                {
+                    coaster.Reset();
+                }
             }
+            
             return results;
 
         }
 
-        private static TaskResults Runner(Coaster coaster, float x, float y, float xRange, float yRange, bool TurnLeft, float ChangeZ = 0, bool changeYawAfterZChange = false, float ChangeZWithin = 50)
+        private static TaskResults Runner(Coaster coaster, int RemoveTracks, float x, float y, float xRange, float yRange, bool TurnLeft, float ChangeZ = 0, bool changeYawAfterZChange = false, float ChangeZWithin = 50)
         {
             bool TurnedToAngleForceDirectionOnce = false;
             TaskResults results = TaskResults.Fail;
@@ -94,6 +101,15 @@ namespace RCLibrary.Support
                 totalAdjustments++;
 
             yawGoal = totalAdjustments * Globals.STANDARD_ANGLE_CHANGE;
+            RemoveChunk removeChunk = new RemoveChunk();
+            for (int j = 0; j < RemoveTracks * 5; j++)
+            {
+                removeChunk.Run(coaster);
+            }
+            results = Builder.BuildTracks(buildActions, coaster);
+            if (results != TaskResults.Successful)
+                return results;
+
 
             if (ChangeZ != 0)
             {

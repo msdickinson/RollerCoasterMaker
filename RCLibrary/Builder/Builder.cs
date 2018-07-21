@@ -268,7 +268,7 @@ namespace RCLibrary
         }
         public static TaskResults RemoveTrack(Coaster coaster, bool removeChunk)
         {
-            if (coaster.NewTrackCount == 0 && coaster.TrackCountBuild == 64)
+            if (coaster.NewTrackCount == 0 && coaster.TrackCountBuild == 45)
             {
                 return TaskResults.OutOfBounds;
             }
