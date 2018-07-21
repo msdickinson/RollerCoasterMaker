@@ -50,6 +50,14 @@ namespace RCLibrary
             else
                 return true;
         }
+
+        public static bool MaxZ(float z)
+        {
+            if (z > Globals.BUILD_AREA_SIZE_Z)
+                return false;
+            else
+                return true;
+        }
         public static bool AngleCheck(float yaw, float pitch, TrackType trackType)
         {
             if (trackType == TrackType.Custom)
@@ -225,9 +233,9 @@ namespace RCLibrary
         {
             //IQNORE 3 + All "Back Tracks"
             int trackMaxPosition = coaster.TrackCountBuild - 3;
-            int xT = (int)(xA / Globals.REGION_LENGTH);
-            int yT = (int)(yA / Globals.REGION_LENGTH);
-            int zT = (int)(zA / Globals.REGION_LENGTH);
+            int xT = (int)(xA / Globals.X_REGION_LENGTH);
+            int yT = (int)(yA / Globals.Y_REGION_LENGTH);
+            int zT = (int)(zA / Globals.Z_REGION_LENGTH);
 
             float j = 0;
             float q = 0;
@@ -238,9 +246,9 @@ namespace RCLibrary
                 {
                     for (int z = zT - 1; z <= zT + 1; z++)
                     {
-                        if (x >= 0 && x < Globals.X_Regions &&
-                            y >= 0 && y < Globals.Y_Regions &&
-                            z >= 0 && z < Globals.Z_Regions &&
+                        if (x >= 0 && x < Globals.REGIONS &&
+                            y >= 0 && y < Globals.REGIONS &&
+                            z >= 0 && z < Globals.REGIONS &&
                             coaster.Regions[x, y, z] != null)
                         {
                             foreach (Track t in coaster.Regions[x, y, z])

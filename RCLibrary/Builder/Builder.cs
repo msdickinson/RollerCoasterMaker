@@ -26,6 +26,7 @@ namespace RCLibrary
         MinX,
         MinY,
         MinZ,
+        MaxZ,
         OutOfBounds,
         SupportFunctionFailed,
         RemoveStartingTracks,
@@ -40,7 +41,7 @@ namespace RCLibrary
         {
             List<BuildAction> buildActions = new List<BuildAction>();
             //Stright
-            for (int i = 0; i < (8 * 3); i++)
+            for (int i = 0; i < (22); i++)
             {
                 buildActions.Add(new BuildAction(TrackType.Stright));
             }
@@ -51,8 +52,8 @@ namespace RCLibrary
                 buildActions.Add(new BuildAction(TrackType.Left));
             }
 
-            //Stright
-            for (int i = 0; i < (28); i++)
+            //Stright  5 
+            for (int i = 0; i < (11); i++)
             {
                 buildActions.Add(new BuildAction(TrackType.Stright));
             }
@@ -313,6 +314,9 @@ namespace RCLibrary
             else if (!Rules.MinZ(yaw, pitch, z))
                 result = TaskResults.MinZ;
 
+            else if (!Rules.MaxZ(z))
+                result = TaskResults.MaxZ;
+            
             else if (!Rules.CollisonX(coaster, x, y, z))
                 result = TaskResults.Collison;
 

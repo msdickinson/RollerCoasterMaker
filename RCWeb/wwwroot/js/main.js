@@ -15,9 +15,9 @@ let cameraTween = null;
 const MAX_TRACKS = 25000;
 const TRACK_GEOMETRY_SCALE = .19;
 const TRACK_POSTION_SCALE = .036;
-const TRACK_X_OFFSET = 18.5;
+const TRACK_X_OFFSET = 17.95;
 const TRACK_Y_OFFSET = 0;
-const TRACK_Z_OFFSET = -12;
+const TRACK_Z_OFFSET = -12.575;
 let AutoChangedRender = false;
 init();
 function updateCameraType(type) {
@@ -120,10 +120,10 @@ function initLayout() {
         layoutMaterials = materials;
         layoutGeometry.sortFacesByMaterialIndex();
         layoutMesh = new THREE.Mesh(layoutGeometry, layoutMaterials);
-        layoutMesh.scale.x = 6;
-        layoutMesh.scale.y = 6;
-        layoutMesh.scale.z = 6;
-layoutMesh.position.y = -.3
+        layoutMesh.scale.x = 5.85;
+        layoutMesh.scale.y = 5.85;
+        layoutMesh.scale.z = 5.85;
+layoutMesh.position.y = -.05
         scene.add(layoutMesh);
     });
 }
@@ -335,7 +335,7 @@ function createTracks(added, color) {
         ////console.log("RC");
         ////console.log("X : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20));
         ////console.log("Y : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 4));
-        ////console.log("Z : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 8));
+        console.log("Z : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 8));
         ////console.log("Yaw : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 12));
         ////console.log("Pitch : " + Blazor.platform.readFloatField(dataReference, (trackCount) * 20 + 16));
 

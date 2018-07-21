@@ -31,10 +31,7 @@ namespace RCLibrary
         public int[] Chunks = new int[Globals.MAX_TRACKS];
         public int TrackCount;
         public int ChunkCount;
-        public const int X_Regions = 300;
-        public const int Y_Regions = 300;
-        public const int Z_Regions = 100;
-        public List<Track>[,,] Regions = new List<Track>[Globals.X_Regions, Globals.Y_Regions, Globals.Z_Regions];
+        public List<Track>[,,] Regions = new List<Track>[Globals.REGIONS, Globals.REGIONS, Globals.REGIONS];
         public int TrackCountBuild;
 
         public Track[] NewTracks = new Track[Globals.MAX_TRACKS];
@@ -74,9 +71,9 @@ namespace RCLibrary
                 {
                    
                     var region = Regions[
-                        (int)(Tracks[i].X / Globals.REGION_LENGTH),
-                        (int)(Tracks[i].Y / Globals.REGION_LENGTH),
-                        (int)(Tracks[i].Z / Globals.REGION_LENGTH)];
+                        (int)(Tracks[i].X / Globals.X_REGION_LENGTH),
+                        (int)(Tracks[i].Y / Globals.Y_REGION_LENGTH),
+                        (int)(Tracks[i].Z / Globals.Z_REGION_LENGTH)];
                     region.RemoveAt(region.Count - 1);
 
                 }
@@ -116,9 +113,9 @@ namespace RCLibrary
                 TrackCount++;
                 if (!startTracks)
                 {
-                    int x = (int)(NewTracks[i].X / Globals.REGION_LENGTH);
-                    int y = (int)(NewTracks[i].Y / Globals.REGION_LENGTH);
-                    int z = (int)(NewTracks[i].Z / Globals.REGION_LENGTH);
+                    int x = (int)(NewTracks[i].X / Globals.X_REGION_LENGTH);
+                    int y = (int)(NewTracks[i].Y / Globals.Y_REGION_LENGTH);
+                    int z = (int)(NewTracks[i].Z / Globals.Z_REGION_LENGTH);
                     if (Regions[x, y, z] == null)
                     {
                         Regions[x, y, z] = new List<Track>();
