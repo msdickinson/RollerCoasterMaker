@@ -232,11 +232,11 @@ namespace RCLibrary
             float j = 0;
             float q = 0;
             float g = 0;
-            for (int x = xT - 1; x < xT + 1; x++)
+            for (int x = xT - 1; x <= xT + 1; x++)
             {
-                for (int y = yT - 1; y < yT + 1; y++)
+                for (int y = yT - 1; y <= yT + 1; y++)
                 {
-                    for (int z = zT - 1; z < zT + 1; z++)
+                    for (int z = zT - 1; z <= zT + 1; z++)
                     {
                         if (x >= 0 && x < Globals.X_Regions &&
                             y >= 0 && y < Globals.Y_Regions &&
