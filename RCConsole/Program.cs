@@ -10,19 +10,39 @@ namespace RCConsole
         {
             RollerCoasterMaker game = new RollerCoasterMaker();
 
+            game.BuildStright();
+            game.BuildStright();
+
             game.BuildLeft();
             game.BuildLeft();
             game.BuildLeft();
             game.BuildLeft();
             game.BuildLeft();
 
-            game.BuildLeft();
-            game.BuildLeft();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            game.BuildStright();
+            //game.BuildFinsh();
 
-            game.BuildFinsh();
-
-            game.Back();
-            game.Back();
+            //game.Back();
+            //game.Back();
         }
     }
 }

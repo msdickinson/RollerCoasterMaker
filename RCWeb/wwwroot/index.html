@@ -226,11 +226,11 @@
 
         Blazor.registerFunction('ContentPackage.CoasterData', function (pointerToData) {
             dataReference = Blazor.platform.getArrayEntryPtr(pointerToData, 0, 4);
-            console.log(dataReference);
+            //c/onsole.log(dataReference);
         });
         Blazor.registerFunction('ContentPackage.Update', function (added, removed) {
-            console.log(added)
-            console.log(removed)
+            //console.log(added)
+            //console.log(removed)
             updateCoaster(added, removed);
         });
         Blazor.registerFunction('ContentPackage.UpdateCamera', function (cameraType) {

@@ -1,0 +1,3 @@
+﻿emcc -o RC.html RC.cpp -O3 -s WASM=1 -std=c++11 --shell-file shell_minimal.html -s NO_EXIT_RUNTIME=1  -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall']"
+
+emcc -o RC.html RC.cpp -O3 -s WASM=1 -std=c++11 --shell-file shell_minimal.html -s NO_EXIT_RUNTIME=1  -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'getValue', 'setValue']"

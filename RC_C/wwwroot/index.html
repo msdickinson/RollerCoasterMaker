@@ -1,0 +1,294 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no; target-densityDpi=device-dpi" />
+    <title>Roller Coaster Maker</title>
+    <link href="css/site.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="/assets/textures/favicon.png">
+    <link rel="preload" as="image" href="/assets/textures/IconMap.png" />
+
+</head>
+<body>
+    <div id="SplashScreen" class="preloader-wrap">
+
+        <div class="loader">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="Build" class="flex-container">
+        <div onclick="BuildLeft()" class="icons-left64"></div>
+        <div onclick="BuildStright()" class="icons-stright64"></div>
+        <div onclick="BuildRight()" class="icons-right64"></div>
+        <div onclick="BuildUp()" class="icons-up64"></div>
+        <div onclick="BuildDown()" class="icons-down64"></div>
+        <div onclick="Back()" class="icons-back64"></div>
+    </div>
+    <!--<div id="Custom">
+        <div onclick="BuildLoop()" class="icons-loop64"></div>
+        <div onclick="BuildUpward()" class="icons-upward64"></div>
+        <div onclick="BuildDownward()" class="icons-downward64"></div>
+        <div onclick="BuildFlaten()" class="icons-flaten64"></div>
+    </div>
+    <div id="Camera">
+        <div onclick="UpdateCameraAuto()" class="icons-cameraAutoB64"></div>
+        <div onclick="UpdateCameraFollow()" class="icons-cameraFollow64"></div>
+        <div onclick="UpdateCameraFree()" class="icons-cameraFree64"></div>
+    </div>-->
+
+    <div class="flex-container-two">
+        <div onclick="UISection('Build')" class="icons-right64"></div>
+        <div onclick="UISection('Custom')" class="icons-railway-tracks-64"></div>
+        <div onclick="UISection('Camera')" class="icons-camera64"></div>
+        <div onclick="BuildFinsh()" class="icons-finish64"></div>
+    </div>
+
+
+
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+        precision highp float;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        uniform mat3 normalMatrix;
+
+        //'blueprint' attribute
+        attribute vec3 position;
+
+        //instance attributes
+        attribute vec3 translation;
+        attribute vec4 rotation;
+        attribute vec3 scale;
+
+        // transforms the 'blueprint' geometry with instance attributes
+        vec3 transform( inout vec3 position, vec3 T, vec4 R, vec3 S ) {
+        //applies the scale
+        position *= S;
+        //computes the rotation where R is a (vec4) quaternion
+        position += 2.0 * cross( R.xyz, cross( R.xyz, position ) + R.w * position );
+        //translates the transformed 'blueprint'
+        position += T;
+        //return the transformed position
+        return position;
+        }
+
+        //re-use position for shading
+        varying vec3 vPos;
+        void main() {
+
+        //collects the 'blueprint' coordinates
+        vec3 pos = position;
+        //transform it
+        transform( pos, translation, rotation, scale );
+        //project to get the fragment position
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+        //just to render something :)
+        vPos = pos;
+        }
+    </script>
+    <script id="vertexTextureShader" type="x-shader/x-vertex">
+        precision highp float;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        uniform mat3 normalMatrix;
+
+        //'blueprint' attribute
+        attribute vec3 position;
+
+        //instance attributes
+        attribute vec3 translation;
+        attribute vec4 rotation;
+        attribute vec3 scale;
+        attribute vec2 uv;
+
+        varying vec2 vUv;
+
+        // transforms the 'blueprint' geometry with instance attributes
+        vec3 transform( inout vec3 position, vec3 T, vec4 R, vec3 S ) {
+        //applies the scale
+        position *= S;
+        //computes the rotation where R is a (vec4) quaternion
+        position += 2.0 * cross( R.xyz, cross( R.xyz, position ) + R.w * position );
+        //translates the transformed 'blueprint'
+        position += T;
+        //return the transformed position
+        return position;
+        }
+
+        //re-use position for shading
+        varying vec3 vPos;
+        void main() {
+
+        //collects the 'blueprint' coordinates
+        vec3 pos = position;
+        //transform it
+        transform( pos, translation, rotation, scale );
+        //project to get the fragment position
+
+        vUv = uv;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+        //just to render something :)
+        vPos = pos;
+        }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        // precision highp float;
+        //varying vec3 vPos;
+        void main() {
+        gl_FragColor = vec4(0,0,0,0);
+        //gl_FragColor = vec4( normalize( vPos ), 1. );
+        }
+    </script>
+    <script id="fragmentTextureShader" type="x-shader/x-fragment">
+        precision highp float;
+        uniform sampler2D map;
+        varying vec2 vUv;
+        void main() {
+        gl_FragColor = texture2D( map, vUv );
+        }
+    </script>
+
+
+    <script src="js/rc.js"></script>
+    <script src="js/compressed.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        const MaxTracks = 20000;
+        let tracks;
+        let coaster = {};
+        Module['onRuntimeInitialized'] = function () {
+            MapCoasterObject();
+            updateCoaster();
+        };
+        function MapCoasterObject() {
+            var pointerToCoaster = Module.ccall('GetCoasterPointer', // name of C function
+                'number', // return type
+                null, // argument types
+                null); // arguments
+
+            coaster = {
+                get TrackCount() {
+                    return Module.getValue(pointerToCoaster, 'i32');
+                },
+                get Added() {
+                    return Module.getValue(pointerToCoaster + 4, 'i32');
+                },
+                get Removed() {
+                    return Module.getValue(pointerToCoaster + 8, 'i32');
+                },
+                Tracks: new Float32Array(Module.HEAPF32.buffer, pointerToCoaster + 12, MaxTracks * 6)
+            }
+
+        }
+
+        function Loaded() {
+            document.getElementById('SplashScreen').hidden = true;
+            // MapCoasterObject();
+            //    updateCoaster();
+        }
+        function GetTracksPointer() {
+            var result = Module.ccall('GetTracksPointer', // name of C function
+                'number', // return type
+                null, // argument types
+                null); // arguments
+
+            tracks = toUint32Array(result);
+        }
+        function BuildStright() {
+            Module.ccall('BuildStright', // name of C function
+                'number', // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function BuildLeft() {
+            Module.ccall('BuildLeft', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function BuildRight() {
+            Module.ccall('BuildRight', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function BuildUp() {
+            Module.ccall('BuildUp', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function BuildDown() {
+            Module.ccall('BuildDown', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function Back() {
+            Module.ccall('Back', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function BuildLoop() {
+            Module.ccall('BuildLoop', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function BuildDownward() {
+            Module.ccall('BuildDownward', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function BuildUpward() {
+            Module.ccall('BuildUpward', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function BuildFlaten() {
+            Module.ccall('BuildFlaten', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+        function BuildFinsh() {
+            Module.ccall('BuildFinsh', // name of C function
+                null, // return type
+                null, // argument types
+                null); // arguments
+            updateCoaster();
+        }
+
+    </script>
+    <script>
+        //if ('serviceWorker' in navigator) {
+        //    navigator.serviceWorker.register('sw.js', { scope: '/' })
+        //        .then(function (registration) {
+        //            console.log('Service Worker Registered');
+        //        });
+
+        //    navigator.serviceWorker.ready.then(function (registration) {
+        //        console.log('Service Worker Ready');
+        //    });
+        //}
+    </script>
+</body>
+</html>

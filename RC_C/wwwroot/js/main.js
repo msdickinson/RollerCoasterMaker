@@ -25,22 +25,21 @@ function updateCameraType(type) {
 }
 function init() {
     initStats();
-
+    //TEST
     initScene();
     initCamera();
     initLights();
     initRenderer();
     initControls();
-
     loader = new THREE.JSONLoader();
     initLayout();
-    initSkybox();
+    //initSkybox();
     initTrack();
 }
 
 function initScene() {
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf0f0f0);
+    scene.background = new THREE.Color(0x4672fa);
 }
 function initCamera() {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.0001, 10000);
@@ -93,12 +92,6 @@ function initStats() {
     stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     //document.body.appendChild(stats.dom);
-}
-function initMesh() {
-    loader.load('./assets/layout.json', function (geometry, materials) {
-        layout = new THREE.Mesh(geometry, materials);
-        scene.add(layout);
-    });
 }
 function initTrack() {
     loader.load('./assets/WoodTrack.json', function (geometry, materials) {
@@ -223,6 +216,8 @@ function setupTracksMatrix() {
             toggleAntiAlias();
         }
     }, 5000);
+
+    Loaded();
 }
 function toggleAntiAlias() {
     if (activeRender == rendererOne) {
@@ -246,11 +241,13 @@ function toggleAntiAlias() {
         controls.forceUpdate(controlsTwo.getPolarAngle(), controlsTwo.getAzimuthalAngle(), controlsTwo.getRadius());
     }
 }
-function updateCoaster(added, removed) {
-    for (var i = 0; i < removed; i++) {
+function updateCoaster() {
+    
+    
+    for (var i = 0; i < coaster.Removed; i++) {
         trackCount--;
     }
-    createTracks(added, false);
+    createTracks(coaster.Added, false);
     updateCamera();
 }
 
@@ -358,13 +355,17 @@ function createTracks(added, color) {
 }
 function createTrack(trackCount, trackIndex) {
     //Create Track Object (Stores Relevent Track Data Translated For Three.Js)
-    trackObjects[trackCount].x = -Blazor.platform.readFloatField(dataReference, trackIndex) * TRACK_POSTION_SCALE + TRACK_X_OFFSET;
-    trackObjects[trackCount].y = Blazor.platform.readFloatField(dataReference, trackIndex + 8) * TRACK_POSTION_SCALE + TRACK_Y_OFFSET;
-    trackObjects[trackCount].z = Blazor.platform.readFloatField(dataReference, trackIndex + 4) * TRACK_POSTION_SCALE + TRACK_Z_OFFSET;
-    trackObjects[trackCount].yaw = Blazor.platform.readFloatField(dataReference, trackIndex + 12) + 90;
-    trackObjects[trackCount].pitch = Blazor.platform.readFloatField(dataReference, trackIndex + 16);
-    trackObjects[trackCount].yawRad = THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 12) + 90);
-    trackObjects[trackCount].pitchRad = THREE.Math.degToRad(Blazor.platform.readFloatField(dataReference, trackIndex + 16));
+
+   
+
+
+    trackObjects[trackCount].x = -coaster.Tracks[trackCount * 6] * TRACK_POSTION_SCALE + TRACK_X_OFFSET;
+    trackObjects[trackCount].y = coaster.Tracks[trackCount * 6 + 2] * TRACK_POSTION_SCALE + TRACK_Y_OFFSET;
+    trackObjects[trackCount].z = coaster.Tracks[trackCount * 6 + 1] * TRACK_POSTION_SCALE + TRACK_Z_OFFSET;
+    trackObjects[trackCount].yaw = coaster.Tracks[trackCount * 6 + 3] + 90;
+    trackObjects[trackCount].pitch = coaster.Tracks[trackCount * 6 + 4];
+    trackObjects[trackCount].yawRad = THREE.Math.degToRad(coaster.Tracks[trackCount * 6 + 3] + 90);
+    trackObjects[trackCount].pitchRad = THREE.Math.degToRad(coaster.Tracks[trackCount * 6 + 4])
 
     var e = new THREE.Euler();
     e.order = 'ZYX';

@@ -13,9 +13,10 @@ namespace RCLibrary
             List<Command> commands = new List<Command>();
             List<BuildAction> buildActions = new List<BuildAction>();
 
-            buildActions.Add(new BuildAction(TrackType.Stright));
-            buildActions.Add(new BuildAction(TrackType.Stright));
-            buildActions.Add(new BuildAction(TrackType.Stright));
+            for(int i = 0; i < 3; i++)
+            {
+                buildActions.Add(new BuildAction(TrackType.Stright));
+            }
 
             return Builder.BuildTracks(buildActions, coaster);
         }
